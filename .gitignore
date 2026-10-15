@@ -2,6 +2,9 @@
 _preview_mobile.html
 启动预览服务.bat
 
+# 部署说明（本地文档，不上线）
+部署到GitHub操作说明.md
+
 # 系统/编辑器
 .DS_Store
 Thumbs.db
