@@ -999,12 +999,45 @@ featureRail:'<section class="arch-sec" id="a-featureRail">'+
 experience:'<section class="arch-sec" id="a-experience">'+
   '<p class="arch-no">Track 04 · Movement II</p><h2 class="arch-title">实习经历</h2><p class="arch-sub">Experience · Internship</p><div class="arch-rule"></div>'+
   '<div class="a-card"><span class="a-badge">AI 产品经理实习生 · 2025.03 — 2025.07</span><h3 class="a-h3">虾皮 Shopee · 基于 Multi-Agent 的电商智能选品项目</h3>'+
-  '<p style="margin-bottom:14px">参与虾皮 Shopee AI 智能选品产品设计工作，构建<b>「Multi-Agent」</b>的智能选品体系，解决传统选品时效低、数据海量难处理的难题，实现商家选品降本增效提升。</p><ul>'+
-  '<li><p><b>业务调研</b>：深入调研遨虾、LinkFox、Eco Tik 等竞品智能选品的产品方案和技术路线，生成调研报告；结合自身业务场景需求，提出<b>「Multi-Agent」</b>的智能选品产品方案设计。</p></li>'+
-  '<li><p><b>智能选品 Agent 设计</b>：根据<b>「专业选品师选品经验」</b>结合<b>「Multi-Agent」</b>技术设计涵盖<b>澄清、规划、研究、报告四个 Agent</b> 的多智能体架构。设计<b>「输入—过程—输出」微观机制</b>——澄清侧通过<b>「需求 / 品类 / 市场 / 商家信息」</b>四维缺失识别 + 3 轮反问上限 + 默认选项卡片策略兜底，收敛模糊选品需求；能力侧将食品选品方法论<b>「宏观市场、微观商品、内因外因四维 + 食品垂直领域 6 大类目差异化选品规则与合规校验沉淀」</b>为策略型 Skill，与 websearch、SQL、RAG 等数据型 Skill 统一编排，定义触发条件、调用优先级与失败降级路径；输出侧设计选品报告大纲：以五模块<b>「市场概览、竞争格局、人群/属性筛选、推荐商品与理由、风险与运营 SOP」</b>，按意图 × 诉求衍生 10 套章节模板，再按 6 大食品类目增删挂载专属研判维度与合规校验。</p></li>'+
-  '<li><p><b>Agent 评测</b>：主导智能选品 Agent 生成报告结果层可行性效果评测与优化工作，<b>从 0 构建 1 套完整的模型评价体系</b>，设计<b>「完整性、数据可信度、逻辑自洽、推荐质量、决策价值」5 维度 26 项指标</b>的评测体系，3 轮评测定位<b>落地执行策略不足、商品推荐不佳</b>两大核心痛点，针对性制定优化策略，采取大模型微调与 Prompt 工程优化，推动 Agent 迭代升级。</p></li>'+
-  '<li><p><b>模型调优</b>：基于已建立的评测闭环（评测集 + 人工标注 + Bad Case 库），参与 AI 选品 Agent 的模型调优：通过评测归因定位<b>推理不透明、推荐同质化、结论落地性低</b>等 11 类典型问题，通过 <b>Prompt 工程约束、工程多路召回</b>等手段迭代优化选品报告质量，形成<b>「评测—调优—再评测」</b>可持续迭代机制；意图识别准确率提升 <b>11%（81% → 92%）</b>，商品推荐质量提升 <b>15%（80% → 95%）</b>。</p></li>'+
-  '<li><p><b>工作成果</b>：商家测试中，AI 智能选品<b>采纳率上升 30%</b>，平均帮助每个企业<b>降低 40% 人力成本</b>；AI 满意度 ≥ 75%，差评占比 &lt; 25%。</p></li></ul>'+
+  '<div class="a-steps">'+
+
+  '<div class="a-step"><p class="a-step-h"><span class="no">①</span><span class="tl">业务调研</span><span class="sep">｜</span>深入竞品与自身场景，提出 Multi-Agent 选品方案：</p>'+
+  '<div class="a-rows">'+
+  '<p class="a-row"><i>竞品</i>：调研遨虾、LinkFox、Eco Tik 等竞品智能选品的<b>产品方案与技术路线</b>，生成调研报告；</p>'+
+  '<p class="a-row"><i>方案</i>：结合自身业务场景需求，提出<b>「Multi-Agent」智能选品</b>产品方案设计。</p>'+
+  '</div></div>'+
+
+  '<div class="a-step"><p class="a-step-h"><span class="no">②</span><span class="tl">Agent 设计</span><span class="sep">｜</span>依据「专业选品师选品经验」结合 Multi-Agent 技术，设计四 Agent 架构与「输入—过程—输出」微观机制：</p>'+
+  '<div class="a-rows">'+
+  '<p class="a-row"><i>架构</i>：设计涵盖<b>澄清、规划、研究、报告四个 Agent</b> 的多智能体架构。</p>'+
+  '<p class="a-row"><i>机制</i>：搭建「输入—过程—输出」三段式微观机制，逐层<b>收敛需求、编排能力、规范输出</b>：</p>'+
+    '<div class="a-rows">'+
+    '<p class="a-row lv2"><i>澄清侧</i>：通过「需求 / 品类 / 市场 / 商家信息」四维缺失识别 + <b>3 轮反问上限</b> + 默认选项卡片策略兜底，收敛模糊选品需求；</p>'+
+    '<p class="a-row lv2"><i>能力侧</i>：将食品选品方法论「宏观市场、微观商品、内因外因四维 + 食品垂直领域 <b>6 大类目</b>差异化选品规则与合规校验」沉淀为<b>策略型 Skill</b>，与 websearch、SQL、RAG 等工具统一编排，定义触发条件、调用优先级与失败降级路径；</p>'+
+    '<p class="a-row lv2"><i>输出侧</i>：设计选品报告大纲——五模块「市场概览、竞争格局、人群/属性筛选、推荐商品与理由、风险与运营 SOP」，按意图 × 诉求衍生 <b>10 套章节模板</b>，再按 6 大食品类目增删挂载专属研判维度与合规校验。</p>'+
+    '</div>'+
+  '</div></div>'+
+
+  '<div class="a-step"><p class="a-step-h"><span class="no">③</span><span class="tl">Agent 评测</span><span class="sep">｜</span>从 0 构建评测体系，3 轮评测定位核心痛点：</p>'+
+  '<div class="a-rows">'+
+  '<p class="a-row"><i>体系</i>：主导报告结果层可行性效果评测与优化，<b>从 0 构建 1 套完整的模型评价体系</b>——「完整性、数据可信度、逻辑自洽、推荐质量、决策价值」<b>5 维度 26 项指标</b>；</p>'+
+  '<p class="a-row"><i>归因</i>：3 轮评测定位<b>「落地执行策略不足、商品推荐不佳」两大核心痛点</b>；</p>'+
+  '<p class="a-row"><i>优化</i>：针对性制定优化策略，采取<b>大模型微调与 Prompt 工程</b>优化，推动 Agent 迭代升级。</p>'+
+  '</div></div>'+
+
+  '<div class="a-step"><p class="a-step-h"><span class="no">④</span><span class="tl">模型调优</span><span class="sep">｜</span>基于评测闭环迭代优化，形成可持续机制：</p>'+
+  '<div class="a-rows">'+
+  '<p class="a-row"><i>定位</i>：基于评测闭环（评测集 + 人工标注 + Bad Case 库），归因定位<b>「推理不透明、推荐同质化、结论落地性低」等 11 类典型问题</b>；</p>'+
+  '<p class="a-row"><i>手段</i>：通过 <b>Prompt 工程约束、工程多路召回</b>等手段迭代优化选品报告质量；</p>'+
+  '<p class="a-row"><i>闭环</i>：形成<b>「评测—调优—再评测」</b>可持续迭代机制——意图识别准确率提升 <b>11%（81% → 92%）</b>，商品推荐质量提升 <b>15%（80% → 95%）</b>。</p>'+
+  '</div></div>'+
+
+  '<div class="a-step"><p class="a-step-h"><span class="no">⑤</span><span class="tl">工作成果</span><span class="sep">｜</span>商家实测验证落地价值：</p>'+
+  '<div class="a-rows">'+
+  '<p class="a-row"><i>效果</i>：AI 智能选品<b>采纳率上升 30%</b>，平均帮助每个企业<b>降低 40% 人力成本</b>；AI 满意度 ≥ 75%，差评占比 &lt; 25%。</p>'+
+  '</div></div>'+
+
+  '</div>'+
   '<div class="a-stats">'+
   '<div class="a-stat"><b>+11%</b><em>意图识别准确率</em><span>81% → 92%</span></div>'+
   '<div class="a-stat"><b>+15%</b><em>商品推荐质量</em><span>80% → 95%</span></div>'+
