@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs><radialGradient id="g" cx="50%" cy="38%" r="70%"><stop offset="0%" stop-color="#d195be"/><stop offset="100%" stop-color="#7a3f68"/></radialGradient></defs>
+  <rect width="200" height="200" fill="url(#g)"/>
+  <g fill="none" stroke="#fbe7f3" stroke-width="6" stroke-linecap="round">
+    <path d="M40 110c0-33 27-60 60-60s60 27 60 60"/>
+    <path d="M55 110c0-25 20-45 45-45s45 20 45 45"/>
+    <path d="M70 110c0-17 13-30 30-30s30 13 30 30"/>
+  </g>
+  <g fill="#fbe7f3">
+    <circle cx="55" cy="120" r="5" opacity=".9"/>
+    <circle cx="85" cy="108" r="5" opacity=".8"/>
+    <circle cx="115" cy="108" r="5" opacity=".8"/>
+    <circle cx="145" cy="120" r="5" opacity=".9"/>
+  </g>
+  <text x="100" y="158" font-family="serif" font-size="12" fill="#fdeef7" text-anchor="middle" letter-spacing="3">SKILLS</text>
+</svg>

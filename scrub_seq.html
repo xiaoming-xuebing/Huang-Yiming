@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>MY PERSONAL SPACE — Huang Yiming</title>
+  <link rel="stylesheet" href="https://db.onlinewebfonts.com/c/5ac3fe7c6abd2f62067f266d89671492?family=HelveticaNowDisplay-Medium">
+  <link rel="stylesheet" href="https://db.onlinewebfonts.com/c/1aa3377e489837a26d019bba501e779d?family=HelveticaNowDisplayW01-Rg">
+  <style>
+  /* Archivo Black 本地化：大标题忽细的根因是 Google Fonts 在线加载不稳 */
+  @font-face{font-family:'Archivo Black';font-style:normal;font-weight:400;font-display:swap;src:url('assets/fonts/archivo-black-latin.woff2') format('woff2')}
+  :root {
+    --font-heading: 'HelveticaNowDisplay-Medium', 'Helvetica Neue', Arial, sans-serif;
+    --font-body: 'HelveticaNowDisplayW01-Rg', 'Helvetica Neue', Arial, sans-serif;
+    --ice:#5EC8E8;                  /* resume-v2 主题色 */
+    --bg-top: rgb(32,74,141);
+    --bg-bot: rgb(30,72,137);
+    --ease:cubic-bezier(.16,1,.3,1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; overflow:hidden; }
+  body { font-family:var(--font-body); color:#fff; background:#000; }
+
+  /* ═════ A 面 · scrub 卡通世界（整层裁剪: 点击后圆形收缩, 圆外纯黑） ═════ */
+  #world { position:fixed; inset:0; z-index:0;
+    background:#1f4a8b url('assets/bg_tile.jpg') center/cover no-repeat;
+    will-change:clip-path,opacity; }
+  body.deep #world { opacity:0; pointer-events:none; }
+  /* 空白区补星：让画布上下的留白读作"夜空延续"而不是空的 */
+  #world::before { content:''; position:absolute; inset:0; pointer-events:none;
+    background-image:
+      radial-gradient(1.4px 1.4px at 18% 22%, rgba(255,255,255,.55) 40%, transparent 62%),
+      radial-gradient(1px 1px at 64% 12%, rgba(255,255,255,.42) 40%, transparent 62%),
+      radial-gradient(1.8px 1.8px at 84% 64%, rgba(255,255,255,.5) 40%, transparent 62%),
+      radial-gradient(1.1px 1.1px at 38% 78%, rgba(255,255,255,.38) 40%, transparent 62%),
+      radial-gradient(1.5px 1.5px at 8% 58%, rgba(255,255,255,.46) 40%, transparent 62%);
+    background-size:290px 290px, 340px 340px, 420px 420px, 260px 260px, 380px 380px;
+    background-repeat:repeat; }
+
+  #pagevig { position:fixed; inset:0; z-index:1; pointer-events:none;
+    background:radial-gradient(ellipse at center, transparent 62%, rgba(10,24,52,.18) 100%); }
+
+  /* ---------- 舞台: 居中画布, 鼠标擦洗图片序列 ---------- */
+  #stage { position:fixed; left:50%; top:50%; z-index:0;
+    height:min(60vh, 94vw); aspect-ratio:674/548;
+    transform:translate(-50%,-50%); }
+  #cv { position:absolute; inset:0; width:100%; height:100%; display:block;
+    -webkit-mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, #000 78%, transparent 100%);
+    mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, #000 78%, transparent 100%); }
+
+  /* ---------- 顶栏 / 文案 / 进度轨 (点击后随世界一起淡出) ---------- */
+  nav { position:fixed; top:0; left:0; right:0; z-index:10;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:max(18px, env(safe-area-inset-top,0px)) max(24px, env(safe-area-inset-right,0px))
+            18px max(24px, env(safe-area-inset-left,0px)); }
+  .logo { display:flex; align-items:baseline; gap:10px; }
+  .logo b { font-family:var(--font-heading); font-weight:500;
+    font-size:clamp(17px,2.2vw,24px); letter-spacing:-0.02em; }
+  .logo span { font-size:clamp(19px,2.4vw,27px); user-select:none; }
+  nav .who { font-size:clamp(13px,1.6vw,17px); letter-spacing:.28em; opacity:.85; }
+
+  #hero { position:fixed; left:24px; bottom:max(30px, calc(env(safe-area-inset-bottom,0px) + 12px)); z-index:5; pointer-events:none; }
+  #hero .kicker { font-size:clamp(12px,1.5vw,15px); letter-spacing:.34em; opacity:.65; margin-bottom:8px; }
+  #hero h1 { font-family:var(--font-heading); font-weight:500;
+    font-size:clamp(24px,4.2vw,48px); line-height:1.04; letter-spacing:-0.01em; }
+  #hero h1 small { display:block; font-size:.42em; letter-spacing:.3em; opacity:.75; margin-top:10px; }
+
+  #rail { position:fixed; left:50%; bottom:max(34px, calc(env(safe-area-inset-bottom,0px) + 16px));
+    transform:translateX(-50%);
+    z-index:10; width:min(440px,58vw); pointer-events:none; }
+  #track { position:relative; height:2px; background:rgba(255,255,255,.25); border-radius:2px; }
+  #dot { position:absolute; top:50%; left:0; width:9px; height:9px; border-radius:50%;
+    background:#fff; transform:translate(-50%,-50%);
+    box-shadow:0 0 10px rgba(170,225,255,.95); }
+  .tick { position:absolute; top:50%; width:2px; height:9px; background:rgba(255,255,255,.45);
+    transform:translate(-50%,-50%); border-radius:1px; }
+  #labels { display:flex; justify-content:space-between; margin-top:12px;
+    font-size:11px; letter-spacing:.24em; opacity:.6; }
+  #labels i { font-style:normal; }
+
+  #hint { position:fixed; left:50%; bottom:92px; transform:translateX(-50%); z-index:10;
+    font-size:clamp(13px,1.7vw,16px); letter-spacing:.18em; opacity:.78;
+    pointer-events:none; transition:opacity .8s ease; white-space:nowrap; }
+  #hint.gone { opacity:0; }
+  #hint .arr { opacity:.55; margin:0 .6em; }
+
+  /* 点击提示: 右下角常显, 带脉冲 */
+  #flipHint { position:fixed; right:max(24px, env(safe-area-inset-right,0px));
+    bottom:max(34px, calc(env(safe-area-inset-bottom,0px) + 16px)); z-index:10;
+    font-size:13.5px; letter-spacing:.3em; opacity:.95; pointer-events:none;
+    display:flex; flex-direction:row; align-items:center; gap:9px;
+    color:#fff; text-shadow:0 0 12px rgba(255,255,255,.45), 0 1px 6px rgba(0,0,0,.4);
+    animation:pulse 2.2s ease-in-out infinite; }
+  /* 白色圆角方框 + 内部镂空箭头（与 B面 goResume 同款图标） */
+  #flipHint .farr { width:28px; height:28px; fill:#fff; display:block;
+    filter:drop-shadow(0 6px 18px rgba(160,205,240,.4)); }
+  @keyframes pulse { 50% { opacity:.55; } }
+
+  /* UI 整体淡出: 触发过渡时 */
+  nav, #hero, #rail, #hint, #pagevig, #flipHint { transition:opacity .55s ease; }
+  body.flip nav, body.flip #hero, body.flip #rail, body.flip #hint, body.flip #pagevig, body.flip #flipHint {
+    opacity:0 !important; pointer-events:none; }
+
+  /* ═════ B 面 · 星野 (圆形放大揭示 = resume 语言) ═════ */
+  #deep { position:fixed; inset:0; z-index:2; pointer-events:none; opacity:0; background:#04070d;
+    transition:opacity .6s ease; will-change:opacity; }
+  body.deep #deep { opacity:1; }
+  #starscv { position:absolute; inset:0; width:100%; height:100%; display:block; }
+  #bgDeep { position:absolute; inset:0;
+    background:
+      radial-gradient(62% 46% at 24% 55%, rgba(44,82,122,.16) 0%, rgba(30,58,92,.07) 45%, transparent 72%),
+      linear-gradient(115deg, rgba(26,52,88,.14) 0%, transparent 42%),
+      radial-gradient(ellipse at 50% 40%, #0a1322 0%, #050912 55%, #02040a 100%); }
+
+  /* ═════ B 面 · 编辑风排版 (参考: 巨型紧排标题 + 方括号标签 + 角落 meta) ═════ */
+  #copyA { position:fixed; inset:0; z-index:5; pointer-events:none;
+    opacity:0; transition:opacity .8s ease .5s; }
+  body.phase2 #copyA { opacity:1; }
+  .bMeta { position:absolute; top:26px; font-size:10px; letter-spacing:.32em;
+    color:rgba(198,220,238,.55); text-transform:uppercase; }
+  .bMeta.l { left:28px; }
+  .bMeta.r { right:28px; }
+  .bInfo { position:absolute; right:6vw; top:50%; transform:translateY(-56%); text-align:right; }
+  .bKick { font-size:10px; letter-spacing:.42em; color:rgba(205,228,244,.78); margin-bottom:22px; }
+  .bInfo h2 { font-family:'Archivo Black','Arial Black',sans-serif; font-weight:400;
+    font-size:clamp(54px,7.6vw,108px); line-height:.94; letter-spacing:0; color:#fff;
+    text-shadow:0 2px 30px rgba(2,6,14,.55); }
+  .bInfo h2 em { font-style:normal;
+    background:linear-gradient(180deg,#f2f8fd 8%, #a9cdea 92%);
+    -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .bRule { width:150px; height:1px; margin:30px 0 18px auto;
+    background:linear-gradient(90deg, rgba(165,205,235,0), rgba(165,205,235,.55)); }
+  .bSub { font-size:10px; letter-spacing:.3em; color:rgba(206,226,242,.72); }
+  .bEnter { position:absolute; right:6vw; bottom:7vh; display:flex; flex-direction:column;
+    align-items:flex-end; gap:14px; pointer-events:none;
+    text-shadow:0 1px 4px rgba(0,0,0,.9); }
+  /* B面就位前入口不可点（否则 A面 点右下会命中隐形的 CLICK TO ENTER 直接跳简历） */
+  body.phase2 .bEnter { pointer-events:auto; }
+  #goResume { display:flex; flex-direction:column; align-items:flex-end; gap:14px;
+    text-decoration:none; color:#fff; }
+  #goResume .gt { font-size:13px; letter-spacing:.34em; font-weight:700;
+    color:#fff; text-shadow:0 0 14px rgba(200,230,255,.55), 0 1px 6px rgba(0,0,0,.5);
+    animation:gtGlow 2.6s ease-in-out infinite; }
+  @keyframes gtGlow { 50% { text-shadow:0 0 22px rgba(210,236,255,.9), 0 1px 6px rgba(0,0,0,.5); } }
+  #goResume .arr { width:62px; height:62px; fill:#fff; display:block;
+    filter:drop-shadow(0 6px 18px rgba(160,205,240,.35));
+    transition:transform .4s var(--ease), filter .4s; }
+  #goResume:hover .arr { transform:translate(5px,-5px) scale(1.05);
+    filter:drop-shadow(0 10px 26px rgba(175,215,245,.55)); }
+  #reFlip { position:absolute; left:7vw; bottom:7vh; pointer-events:none;
+    background:none; border:none; color:rgba(210,228,244,.9); cursor:pointer;
+    font-family:var(--font-body); font-size:11.5px; letter-spacing:.34em; text-transform:uppercase;
+    padding:8px 2px; border-bottom:1px solid rgba(200,220,238,.4);
+    transition:color .3s, border-color .3s;
+    text-shadow:0 0 10px rgba(190,220,245,.35); }
+  #reFlip:hover { color:#fff; border-color:rgba(255,255,255,.5); }
+  body.phase2 #reFlip { pointer-events:auto; }
+
+  .grain { position:fixed; inset:-12%; z-index:9; pointer-events:none; mix-blend-mode:screen; opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size:140px 140px; }
+
+  @media (max-width:640px){
+    nav .who { display:none; }
+    /* 竖屏: 标题移到顶部补空白, 底部只留 提示+进度轨 */
+    #hero { left:18px; right:18px; top:max(58px, calc(env(safe-area-inset-top,0px) + 50px)); bottom:auto; }
+    /* 进度轨贴到画布（小猫）正下方：画布底 = 50% + min(30vh,47vw)，与 JS 公式同步 */
+    #rail { bottom:auto; top:calc(50% + min(30vh,47vw) + 12px); width:min(440px,76vw); }
+    #hint { bottom:max(64px, calc(env(safe-area-inset-bottom,0px) + 44px)); }
+    /* B面: 杂志封面式——标题块压顶（锚在品牌行下），银河占中，入口收底，三段撑满竖屏 */
+    .bMeta { top:max(30px, calc(env(safe-area-inset-top,0px) + 16px));
+      font-size:10.5px; color:rgba(208,228,246,.8); }
+    .bInfo { top:calc(env(safe-area-inset-top,0px) + 72px); transform:none; right:5vw; }
+    .bInfo h2 { font-size:clamp(44px,15vw,72px); }
+    .bKick { margin-bottom:16px; }
+    .bSub { text-shadow:0 1px 8px rgba(2,6,14,.85); }
+    .bRule { margin:18px 0 12px auto; width:110px; }
+    /* bKick 挪到红框位：左下约 22vh 处（漩涡与底部 CTA 之间的空档），做对角均衡 */
+    .bKick{position:fixed;left:6vw;bottom:22vh;margin:0;
+      font-size:10.5px;color:rgba(215,233,248,.85);z-index:6}
+    /* 跳转保持右下角点击（尺寸放大过的版本） */
+    #flipHint{font-size:15px;letter-spacing:.32em;right:max(18px, env(safe-area-inset-right,0px))}
+    #flipHint .farr{width:32px;height:32px}
+    #hint{bottom:max(64px, calc(env(safe-area-inset-bottom,0px) + 44px))}
+    .bEnter { bottom:max(20px, calc(env(safe-area-inset-bottom,0px) + 14px)); }
+    #goResume .arr { width:50px; height:50px; }
+    #reFlip { left:6vw; bottom:max(16px, calc(env(safe-area-inset-bottom,0px) + 10px)); }
+  }
+  /* 横屏矮窗 (手机横过来): 压缩 B面 垂直占位, 避免标题与入口按钮相撞 */
+  @media (max-height:500px){
+    .bInfo { top:46%; }
+    .bInfo h2 { font-size:clamp(34px,9.5vh,64px); }
+    .bKick { margin-bottom:10px; }
+    .bRule { margin:12px 0 8px auto; }
+    .bEnter { bottom:max(10px, calc(env(safe-area-inset-bottom,0px) + 6px)); }
+    #reFlip { bottom:max(12px, calc(env(safe-area-inset-bottom,0px) + 8px)); }
+    #hero { top:auto; bottom:max(20px, calc(env(safe-area-inset-bottom,0px) + 8px)); }
+    #hint { display:none; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ═════ A 面 · 整个 scrub 世界包在 #world 里, 供圆形蒙版裁剪 ═════ -->
+  <div id="world">
+    <div id="stage"><canvas id="cv" width="674" height="548"></canvas></div>
+    <div id="pagevig"></div>
+
+    <nav>
+      <div class="logo"><b>MY PERSONAL SPACE</b><span>✳︎</span></div>
+      <div class="who">HUANG YIMING</div>
+    </nav>
+
+    <div id="hero">
+      <div class="kicker">RECORD · CAT · COSMOS</div>
+      <h1>MY PERSONAL<br>SPACE<small>MOVE MOUSE TO PLAY</small></h1>
+    </div>
+
+    <div id="hint">LEFT<span class="arr">←</span>REACH · PUSH · LISTEN<span class="arr">→</span>RIGHT</div>
+
+    <div id="rail">
+      <div id="track"><div id="dot"></div></div>
+      <div id="labels"><i>01 REACH</i><i>02 PUSH</i><i>03 LISTEN</i></div>
+    </div>
+
+    <div id="flipHint">
+      <span>CLICK ✦ TO FLIP</span>
+      <svg class="farr" viewBox="0 0 64 64"><path fill-rule="evenodd" d="M14 0 H50 Q64 0 64 14 V50 Q64 64 50 64 H14 Q0 64 0 50 V14 Q0 0 14 0 Z M17.5 26.4 L17.5 22.2 Q17.5 20.4 19.3 20.4 L41.8 20.4 Q43.6 20.4 43.6 22.2 L43.6 44.7 Q43.6 46.5 41.8 46.5 L37.6 46.5 Q37.6 46.5 37.6 46.5 L37.6 30.9 L24.6 43.9 Q23.3 45.2 22 43.9 L20.1 42 Q18.8 40.7 20.1 39.4 L33.1 26.4 L17.5 26.4 Z"/></svg>
+    </div>
+  </div>
+
+  <!-- ═════ B 面 ═════ -->
+  <div id="deep">
+    <div id="bgDeep"></div>
+    <canvas id="starscv"></canvas>
+  </div>
+
+  <div id="copyA">
+    <div class="bMeta l">GALAXY ALBUM</div>
+    <div class="bMeta r">[ HUANG YIMING ]</div>
+    <div class="bInfo">
+      <div class="bKick">[ FUTURISTIC MUSIC ]</div>
+      <h2>MY<br>PERSONAL<br><em>SPACE.</em></h2>
+      <div class="bRule"></div>
+      <div class="bSub">HUANG YIMING — PERSONAL PORTFOLIO</div>
+    </div>
+    <div class="bEnter">
+      <a id="goResume" href="resume-v2.html?v=m24">
+        <span class="gt">CLICK TO ENTER</span>
+        <svg class="arr" viewBox="0 0 64 64"><path fill-rule="evenodd" d="M14 0 H50 Q64 0 64 14 V50 Q64 64 50 64 H14 Q0 64 0 50 V14 Q0 0 14 0 Z M17.5 26.4 L17.5 22.2 Q17.5 20.4 19.3 20.4 L41.8 20.4 Q43.6 20.4 43.6 22.2 L43.6 44.7 Q43.6 46.5 41.8 46.5 L37.6 46.5 Q37.6 46.5 37.6 46.5 L37.6 30.9 L24.6 43.9 Q23.3 45.2 22 43.9 L20.1 42 Q18.8 40.7 20.1 39.4 L33.1 26.4 L17.5 26.4 Z"/></svg>
+      </a>
+    </div>
+    <button id="reFlip">↺ Replay</button>
+  </div>
+
+  <div class="grain"></div>
+
+<script>
+(function(){
+  const N = 200;                     // 图片序列总帧数 (674x548, 来自无水印视频)
+  const cv = document.getElementById('cv');
+  const ctx = cv.getContext('2d');
+  const stage = document.getElementById('stage');
+  const track = document.getElementById('track');
+  const dot = document.getElementById('dot');
+  const hint = document.getElementById('hint');
+
+  /* 触屏设备: 文案与提示改为触摸语言 */
+  const COARSE = matchMedia('(pointer: coarse)').matches;
+  const PLAY_TIP = COARSE ? 'TOUCH TO PLAY' : 'MOVE MOUSE TO PLAY';
+  const IDLE_HINT = COARSE
+    ? 'SWIPE<span class="arr">←</span>REACH · PUSH · LISTEN<span class="arr">→</span>RIGHT'
+    : 'LEFT<span class="arr">←</span>REACH · PUSH · LISTEN<span class="arr">→</span>RIGHT';
+  if (COARSE){
+    const sm = document.querySelector('#hero h1 small');
+    if (sm) sm.textContent = 'TOUCH TO PLAY';
+    hint.innerHTML = IDLE_HINT;
+  }
+
+  // 中间刻度
+  const tick = document.createElement('div');
+  tick.className = 'tick'; tick.style.left = '50%';
+  track.appendChild(tick);
+
+  // ---------- 预加载 200 帧 (对齐版 seq3) ----------
+  const imgs = new Array(N);
+  let loaded = 0, firstFrameDrawn = false;
+  for (let i = 0; i < N; i++) {
+    const im = new Image();
+    im.src = 'assets/seq3/f_' + String(i).padStart(4, '0') + '.jpg';
+    im.onload = () => { loaded++; };
+    imgs[i] = im;
+  }
+
+  const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
+  let target = 0, cur = 0, manual = false, hintGone = false, flipped = false;
+
+  function setFromX(x){ target = clamp(x / window.innerWidth, 0, 1); }
+  window.addEventListener('mousemove', e=>{
+    if (flipped) return;
+    manual = true;
+    if(!hintGone){ hintGone=true; hint.classList.add('gone'); }
+    setFromX(e.clientX);
+  });
+  /* 触屏手势互斥规则：
+     横向主导的移动 = 擦洗（竖向滑动不干扰）；
+     几乎不动的快速点按 = 翻面；
+     只要本次触摸累计位移 ≥14px，抬手绝不翻面 —— 两个手势不打架 */
+  let downX = 0, downY = 0, downT = 0, tMove = 0;
+  window.addEventListener('touchstart', e=>{
+    if(flipped) return;
+    manual = true;
+    const t = e.touches[0];
+    downX = t.clientX; downY = t.clientY; downT = performance.now(); tMove = 0;
+  }, {passive:true});
+  window.addEventListener('touchmove', e=>{
+    if(flipped) return;
+    const t = e.touches[0];
+    const dx = t.clientX - downX, dy = t.clientY - downY;
+    tMove = Math.max(tMove, Math.hypot(dx, dy));
+    if(Math.abs(dx) > Math.abs(dy)){
+      if(!hintGone){ hintGone = true; hint.classList.add('gone'); }
+      setFromX(t.clientX);
+    }
+  }, {passive:true});
+  window.addEventListener('touchend', e=>{
+    if(flipped) return;
+    const t = e.changedTouches[0];
+    const still = Math.hypot(t.clientX - downX, t.clientY - downY) < 10;
+    if(still && tMove < 14 && performance.now() - downT < 400) startFlip();
+  }, {passive:true});
+
+  /* ═══════════ 过渡几何: 唱片在画布 (674x548) 中的实测位置 ═══════════ */
+  const DISC = { cx: 306, cy: 306, R: 162 };
+  const world = document.getElementById('world');
+  const deep  = document.getElementById('deep');
+
+  function discScreen(){
+    const h = Math.min(innerHeight * .60, innerWidth * .94);   // = CSS height:min(60vh,94vw)
+    const scale = h / 548;
+    return {
+      cx: innerWidth/2  + (DISC.cx - 337) * scale,
+      cy: innerHeight/2 + (DISC.cy - 274) * scale,
+      R : DISC.R * scale
+    };
+  }
+  function diag(){ return Math.hypot(innerWidth, innerHeight) / 2 + 20; }
+  function setClip(el, R, cx, cy){ el.style.clipPath = `circle(${R}px at ${cx}px ${cy}px)`; }
+
+  /* 初始: world 全显(diag 圆) */
+  function layout(){
+    const d = discScreen(), D = diag();
+    setClip(world, D, innerWidth/2, innerHeight/2);
+  }
+  layout();
+  addEventListener('resize', () => { if (!flipped) layout(); });
+
+  /* ═══════════ B 面 · 银河 (intro 引擎 + 参考图色卡/构图) ═══════════
+     分镜: 全黑后 扁片漩涡(TILT 0.52)在参考图构图位由小变大; 不展平(顶视图留给 resume) */
+  const scv = document.getElementById('starscv'), sx = scv.getContext('2d');
+  let W, H;
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  let parts = [], starParts = [];
+  let galK = 0, galStart = 0;          // galStart>0 后漩涡由小变大浮现
+  let gmx = 0, gmy = 0, gvx = 0, gvy = 0;   // 银河鼠标扰动
+  const ROT = 0.42;                    // 银河自转 (差速基准: 内快外慢, 形状持续演化)
+  let galDead = false;                 // 点击进入后停渲染
+  const TILT0 = 0.52;                  // 扁片漩涡倾角 (intro 开场同款, 恒定)
+
+  let GCX, GCY, GRX, TILT = TILT0;     // 当前帧漩涡状态 (每帧重算, TILT 恒扁片)
+  let spawnX = 0, spawnY = 0;          // 漩涡出生点 = scrub 唱片屏幕位 (startFlip 时记录)
+  let galMoveStart = 0;                // >0 后漩涡从出生点迁往构图位
+  function galLayout(){
+    W = scv.width = innerWidth * dpr; H = scv.height = innerHeight * dpr;
+    scv.style.width = innerWidth + 'px'; scv.style.height = innerHeight + 'px';
+    sx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    W = innerWidth; H = innerHeight;
+  }
+  /* 参考图构图: 漩涡最终中心偏左下 (25%, 56%), 大小占满画面 (rx≈0.63W)
+     分镜: 在唱片出生点由小变大 → 长成后 1.9s 平滑迁往构图位 */
+  const GCX_F = 0.25, GCY_F = 0.56, GRX_F_K = 0.63;
+  function galState(){
+    const tNow = performance.now() / 1000;
+    // 倾角缓慢起伏: 漩涡像悬浮薄片一样有极缓的明暗面变化 (±0.035, 周期~27s)
+    TILT = TILT0 + Math.sin(tNow * 0.23) * 0.035;
+    const full = Math.min(W * GRX_F_K, H * 1.05);
+    let cx = spawnX, cy = spawnY;
+    if (galMoveStart > 0){
+      const p = ss(0, 1.9, (performance.now() - galMoveStart) / 1000);
+      cx = spawnX + (W * GCX_F - spawnX) * p;
+      cy = spawnY + (H * GCY_F - spawnY) * p;
+    }
+    GCX = cx; GCY = cy;
+    if (galStart > 0){
+      const p = ss(0, 1.6, (performance.now() - galStart) / 1000);   // 由小变大
+      // 双频呼吸: 整体尺度缓涨缓缩 (±2.4% 慢频 + ±1.1% 快频), 静置时也持续"活"着
+      const breath = 1 + Math.sin(tNow * 0.45) * 0.024 + Math.sin(tNow * 0.9 + 1.7) * 0.011;
+      GRX = full * (0.06 + 0.94 * p) * breath;
+    } else {
+      GRX = full * 0.06;
+    }
+  }
+  function buildGalaxy(){
+    parts = [];
+    const RING_COUNT = 90;
+    for (let ring = 0; ring < RING_COUNT; ring++){
+      const t = ring / RING_COUNT;
+      // 全盘填充: 从中心星体外缘(0.12)一直铺到盘缘, 参考图密集沟槽质感
+      const rBase = 0.12 + Math.pow(t, 0.8) * 0.86;
+      const perRing = Math.round(9 + (1 - t) * 20);
+      for (let i = 0; i < perRing; i++){
+        const rnd = Math.random();
+        parts.push({
+          a: Math.random() * Math.PI * 2,
+          r: rBase + (Math.random() - 0.5) * 0.006,
+          sp: 0.55 + (1.02 - rBase) * 0.85 + (Math.random() - 0.5) * 0.06,
+          sz: 1.1 + Math.random() * 1.8,
+          streak: 0.10 + Math.random() * 0.30,
+          // 参考图色卡: 冰蓝青 55% / 高光白 20% / 深蓝 25%
+          tone: rnd < 0.55 ? 'ice' : (rnd < 0.75 ? 'white' : 'deep'),
+          thick: 0.5 + Math.random() * 0.4,
+          bright: Math.random()
+        });
+      }
+    }
+    starParts = Array.from({length: 160}, () => ({
+      x: Math.random(), y: Math.random(),
+      s: Math.random() * 1.1 + 0.2,
+      tw: Math.random() * Math.PI * 2,
+      tws: 0.5 + Math.random() * 1.5
+    }));
+  }
+  galLayout(); buildGalaxy();
+  addEventListener('resize', () => { galLayout(); });
+  addEventListener('mousemove', e => { gvx = e.clientX - gmx; gvy = e.clientY - gmy; gmx = e.clientX; gmy = e.clientY; });
+  /* 触屏: B面银河同样响应手指划过扰动 */
+  addEventListener('touchmove', e => {
+    if (!flipped) return;
+    const t = e.touches[0];
+    gvx = t.clientX - gmx; gvy = t.clientY - gmy;
+    gmx = t.clientX; gmy = t.clientY;
+  }, {passive:true});
+
+  const ss = (a, b, x) => { const c = Math.max(0, Math.min(1, (x - a) / (b - a))); return c * c * (3 - 2 * c); };
+  const SIG = 0.15, maxA = 0.12, HARD_LIM = 0.14;   // 扰动强反馈: 静悬~42px拉伸, 快扫顶到~99px (用户要求鼠标划过变化明显)
+  // 扰动偏移 (intro 同款: 跟随鼠标速度方向; 快速划过时位移更强)
+  function stir(px, py){
+    const dx = (gmx - GCX) - px, dy = (gmy - GCY) - py;
+    const d2 = dx * dx + dy * dy;
+    const sig = SIG * GRX;
+    const mv = Math.hypot(gvx, gvy);
+    // 鼠标速度加成: 静悬 0.7x → 快速划过最高 1.35x, 拂过星轨有"拨开"感
+    const spdBoost = 0.7 + Math.min(mv / 22, 1) * 0.65;
+    const amp = Math.exp(-d2 / (sig * sig)) * maxA * GRX * spdBoost;
+    let ox = 0, oy = 0;
+    if (mv > 0.01){ ox = (gvx / mv) * amp; oy = (gvy / mv) * amp; }
+    else { const d = Math.sqrt(d2) || 1; ox = (dx / d) * amp * 0.7; oy = (dy / d) * amp * 0.7; }
+    const ol = Math.hypot(ox, oy), lim = GRX * HARD_LIM;
+    if (ol > lim){ ox = ox / ol * lim; oy = oy / ol * lim; }
+    return [ox, oy];
+  }
+
+  (function galLoop(tms){
+    if (galDead){ sx.clearRect(0, 0, W, H); return; }      // 跳转瞬间停渲染, 让出主线程
+    requestAnimationFrame(galLoop);
+    const t = tms / 1000;
+    gvx *= 0.92; gvy *= 0.92;
+    if (galStart > 0) galK = ss(0.15, 1.6, (performance.now() - galStart) / 1000);
+    sx.clearRect(0, 0, W, H);
+    if (!document.body.classList.contains('deep') || galK <= 0.01) return;   // A 面不绘制
+    galState();
+
+    // 远景星点
+    for (const s of starParts){
+      const a = 0.4 + 0.6 * (0.5 + 0.5 * Math.sin(t * s.tws + s.tw));
+      sx.fillStyle = `rgba(210,225,245,${a * 0.85})`;
+      sx.beginPath(); sx.arc(s.x * W, s.y * H, s.s * 1.3, 0, Math.PI * 2); sx.fill();
+    }
+    // 中心冷雾 (无光源感: 极淡的氛围雾, 参考图弥散光, 绝不做发光点; 随呼吸同步涨落)
+    const mistK = (0.82 + 0.30 * Math.sin(t * 0.45 + 1.7)) * galK;
+    const mist = sx.createRadialGradient(GCX, GCY, 0, GCX, GCY, GRX * 0.17);
+    mist.addColorStop(0, `rgba(88,138,188,${0.15 * mistK})`);
+    mist.addColorStop(0.55, `rgba(50,88,132,${0.065 * mistK})`);
+    mist.addColorStop(1, 'rgba(30,60,100,0)');
+    sx.fillStyle = mist;
+    sx.beginPath(); sx.ellipse(GCX, GCY, GRX * 0.17, GRX * 0.17 * TILT, 0, 0, Math.PI * 2); sx.fill();
+    // 银河暗盘底
+    const grd = sx.createRadialGradient(GCX, GCY, 0, GCX, GCY, GRX);
+    grd.addColorStop(0, `rgba(18,34,58,${0.32 * galK})`);
+    grd.addColorStop(0.6, `rgba(10,20,38,${0.16 * galK})`);
+    grd.addColorStop(1, 'rgba(4,8,16,0)');
+    sx.fillStyle = grd;
+    sx.beginPath(); sx.ellipse(GCX, GCY, GRX, GRX * TILT, 0, 0, Math.PI * 2); sx.fill();
+    // 黑胶沟槽 (冰蓝细纹铺满全盘, 每 5 环一簇亮纹 = 参考图反光簇)
+    sx.save(); sx.translate(GCX, GCY);
+    for (let ring = 0; ring < 90; ring++){
+      const rr = (0.12 + Math.pow(ring / 90, 0.8) * 0.86) * GRX;
+      const cluster = (ring % 5 === 0) ? 2.2 : 1;
+      sx.strokeStyle = `rgba(122,168,204,${0.05 * cluster * galK})`;
+      sx.lineWidth = 0.5;
+      sx.beginPath(); sx.ellipse(0, 0, rr, rr * TILT, 0, 0, Math.PI * 2); sx.stroke();
+    }
+    sx.restore();
+
+    // 长拖尾粒子 (银白 60% / 暖金 20% / 冷蓝 20%, 尾淡头亮)
+    sx.save(); sx.translate(GCX, GCY); sx.lineCap = 'round';
+    for (const p of parts){
+      const ang = p.a + t * p.sp * ROT;
+      const r_eff = p.r * GRX;
+      const hx0 = Math.cos(ang) * r_eff, hy0 = Math.sin(ang) * r_eff * TILT;
+      const far = ((gmx - GCX) - hx0) ** 2 + ((gmy - GCY) - hy0) ** 2 > (SIG * GRX * 3) ** 2;
+      // 扰动响应: 跟随系数 0.07 (约0.4s 到位, 扫过瞬间即成型); 鼠标离开后残余偏移缓慢衰减 (~2.5s 归位)
+      let pox = 0, poy = 0;
+      if (!far){
+        const [tx, ty] = stir(hx0, hy0);
+        p.ox = (p.ox || 0) + (tx - (p.ox || 0)) * 0.07;
+        p.oy = (p.oy || 0) + (ty - (p.oy || 0)) * 0.07;
+        pox = p.ox; poy = p.oy;
+      } else if (p.ox || p.oy){
+        p.ox *= 0.985; p.oy *= 0.985;
+        pox = p.ox; poy = p.oy;
+      }
+      const dim = 0.55 + 0.45 * p.bright;
+      const bHi = p.bright > 0.80, bMid = p.bright > 0.5;
+      // 参考图色卡: 冰蓝青 / 高光白 / 深蓝
+      let baseR, baseG, baseB, baseAlpha;
+      if (p.tone === 'white'){
+        baseR = 222 + dim * 24; baseG = 238 + dim * 14; baseB = 248 + dim * 6;
+        baseAlpha = galK * (bHi ? 0.60 + 0.30 * dim : bMid ? 0.38 + 0.26 * dim : 0.24 + 0.18 * dim) * (0.7 + p.thick * 0.3);
+      } else if (p.tone === 'deep'){
+        baseR = 52 + dim * 34; baseG = 96 + dim * 42; baseB = 134 + dim * 46;
+        baseAlpha = galK * (bHi ? 0.42 + 0.24 * dim : bMid ? 0.28 + 0.20 * dim : 0.18 + 0.14 * dim) * (0.7 + p.thick * 0.3);
+      } else {  // ice
+        baseR = 118 + dim * 52; baseG = 172 + dim * 44; baseB = 208 + dim * 38;
+        baseAlpha = galK * (bHi ? 0.58 + 0.28 * dim : bMid ? 0.36 + 0.24 * dim : 0.22 + 0.16 * dim) * (0.7 + p.thick * 0.3);
+      }
+      const SEG = 3;
+      for (let s = 0; s < SEG; s++){
+        const f0 = s / SEG, f1 = (s + 1) / SEG;
+        const segAlpha = baseAlpha * (0.18 + 0.82 * ((f0 + f1) / 2));
+        sx.strokeStyle = `rgba(${baseR | 0},${baseG | 0},${baseB | 0},${segAlpha})`;
+        sx.lineWidth = p.sz * (0.9 + 0.5 * ((f0 + f1) / 2));
+        sx.beginPath();
+        for (let q = s; q <= s + 1; q++){
+          const f = q / SEG;
+          const a = (ang - p.streak) + p.streak * f;
+          let px = Math.cos(a) * r_eff, py = Math.sin(a) * r_eff * TILT;
+          px += pox; py += poy;
+          if (q === s) sx.moveTo(px, py); else sx.lineTo(px, py);
+        }
+        sx.stroke();
+      }
+      // 沿弧颗粒
+      if (p.bright > 0.4){
+        const da = (ang - p.streak) + p.streak * (0.3 + p.bright * 0.5);
+        let dpx = Math.cos(da) * r_eff, dpy = Math.sin(da) * r_eff * TILT;
+        dpx += pox; dpy += poy;
+        let dr, dg, db;
+        if (p.tone === 'white'){ dr = 230; dg = 242; db = 250; }
+        else if (p.tone === 'deep'){ dr = 74; dg = 118; db = 156; }
+        else { dr = 142; dg = 194; db = 228; }
+        sx.fillStyle = `rgba(${dr},${dg},${db},${galK * (0.30 + 0.28 * dim)})`;
+        sx.beginPath(); sx.arc(dpx, dpy, p.sz * 0.5, 0, Math.PI * 2); sx.fill();
+      }
+      // 头部亮点
+      if (galK > 0.55 && p.bright > 0.4){
+        let hx = Math.cos(ang) * r_eff, hy = Math.sin(ang) * r_eff * TILT;
+        hx += pox; hy += poy;
+        let hr, hg, hb;
+        if (p.tone === 'white'){ hr = 240; hg = 248; hb = 253; }
+        else if (p.tone === 'deep'){ hr = 92; hg = 138; hb = 172; }
+        else { hr = 158; hg = 208; hb = 238; }
+        sx.fillStyle = `rgba(${hr},${hg},${hb},${galK * (0.52 + 0.18 * dim)})`;
+        sx.beginPath(); sx.arc(hx, hy, p.sz * 0.82, 0, Math.PI * 2); sx.fill();
+      }
+    }
+    // ── 炫酷层: 双臂旋转高光扫掠 (lighter 加法混合, 像星系旋臂反光)
+    sx.globalCompositeOperation = 'lighter';
+    const sweep = t * 0.34;
+    for (let k = 0; k < 2; k++){
+      const aa = sweep + k * Math.PI;
+      const px = Math.cos(aa) * GRX * 0.60, py = Math.sin(aa) * GRX * 0.60 * TILT;
+      const sr = GRX * 0.24;
+      const g2 = sx.createRadialGradient(px, py, 0, px, py, sr);
+      g2.addColorStop(0, `rgba(150,215,250,${0.19 * galK})`);
+      g2.addColorStop(0.55, `rgba(110,190,235,${0.09 * galK})`);
+      g2.addColorStop(1, 'rgba(110,190,235,0)');
+      sx.fillStyle = g2;
+      sx.beginPath(); sx.ellipse(px, py, sr, sr * TILT, 0, 0, Math.PI * 2); sx.fill();
+    }
+    // 外缘呼吸亮环
+    const rimA = 0.10 * galK * (0.42 + 0.58 * Math.sin(t * 1.1));
+    sx.strokeStyle = `rgba(145,208,242,${rimA})`;
+    sx.lineWidth = 1.4;
+    sx.beginPath(); sx.ellipse(0, 0, GRX * 0.985, GRX * 0.985 * TILT, 0, 0, Math.PI * 2); sx.stroke();
+    sx.globalCompositeOperation = 'source-over';
+    sx.restore();
+  })(0);
+
+  document.getElementById('goResume').addEventListener('click', () => { galDead = true; });
+
+  /* ═══════════ 翻面时序 (点击触发) ═══════════
+     1) 0.1-1.4s   world 圆形收缩 diag→snug(唱片外接圆), 聚焦唱片
+     2) 1.4-2.05s  停留极短瞬间
+     3) 2.05-2.6s  snug→0 继续缩小, 全黑
+     4) 2.6s       deep 淡入(world 淡出); 扁片漩涡(TILT 0.52)在唱片出生点由小变大
+     5) 4.5-6.4s   漩涡长成后 1.9s 迁往参考图构图位(25%,56%); 不展平——顶视图留给 resume 页
+     6) ~3.4s      参考图文案: 右上标题 / 右下 CLICK TO ENTER                */
+  function startFlip(){
+    if (flipped) return;
+    flipped = true; manual = true;
+    const d = discScreen(), D = diag();
+    spawnX = d.cx; spawnY = d.cy;        // 漩涡出生点 = 唱片处
+    galMoveStart = 0;
+    document.body.classList.add('flip');
+    cv.style.webkitMaskImage = 'none'; cv.style.maskImage = 'none';   // 收紧时画布边缘不许露黑
+    setTimeout(() => {                                    // 收缩 → 聚焦唱片
+      setClip(world, d.R, d.cx, d.cy);
+      world.style.transition = 'clip-path 1.3s cubic-bezier(.16,1,.3,1), opacity .6s ease';
+    }, 100);
+    setTimeout(() => {                                    // 停留后继续缩 → 全黑
+      world.style.transition = 'clip-path .55s cubic-bezier(.5,0,.75,.4), opacity .4s ease';
+      setClip(world, 0.5, d.cx, d.cy);
+    }, 2050);
+    setTimeout(() => {                                    // 全黑 → 漩涡在唱片处由小变大
+      document.body.classList.add('deep');
+      document.body.classList.add('phase2');
+      galStart = performance.now();
+      setTimeout(() => { galMoveStart = performance.now(); }, 1900);   // 长成后迁往构图位
+    }, 2600);
+  }
+  document.getElementById('reFlip').addEventListener('click', () => {
+    document.body.classList.remove('flip','deep','phase2');
+    world.style.clipPath = ''; deep.style.clipPath = '';
+    cv.style.webkitMaskImage = ''; cv.style.maskImage = '';
+    layout();
+    galStart = 0; galK = 0; galMoveStart = 0;
+    flipped = false; manual = false;
+  });
+
+  // ---------- 鼠标点击 = 按下/抬起位移很小 (触屏规则见上方手势互斥块) ----------
+  addEventListener('mousedown', e => { downX = e.clientX; downY = e.clientY; downT = performance.now(); });
+  addEventListener('mouseup',   e => {
+    if (flipped) return;
+    if (Math.hypot(e.clientX - downX, e.clientY - downY) < 8 && performance.now() - downT < 500) startFlip();
+  });
+
+  // ---------- 渲染: 硬切图片帧, 零延迟 ----------
+  let lastIdx = -1;
+  function draw(idx){
+    const im = imgs[idx];
+    if (im && im.complete && im.naturalWidth){
+      ctx.drawImage(im, 0, 0, cv.width, cv.height);
+      firstFrameDrawn = true;
+    }
+  }
+  function render(){
+    if (!flipped){
+      cur += (target - cur) * 0.28;
+      if (Math.abs(target - cur) < 0.0005) cur = target;
+      const idx = clamp(Math.round(cur * (N - 1)), 0, N - 1);
+      if (idx !== lastIdx){ draw(idx); lastIdx = idx; }
+      dot.style.left = (cur*100).toFixed(2) + '%';
+    }
+
+    if (!firstFrameDrawn){
+      hint.innerHTML = 'LOADING ' + Math.round(loaded/N*100) + '%';
+    } else if (loaded < N && !hintGone && hint.innerHTML.indexOf('LOADING') === 0){
+      hint.innerHTML = 'LOADING ' + Math.round(loaded/N*100) + '% · ' + PLAY_TIP;
+    } else if (loaded >= N && !hint.classList.contains('gone') && hint.innerHTML.indexOf('LOADING') === 0){
+      hint.innerHTML = IDLE_HINT;
+    }
+    requestAnimationFrame(render);
+  }
+
+  // 未接管前: 自动往返播放 (1→3→1)
+  const t0 = performance.now();
+  (function idle(now){
+    if(!manual) target = (Math.sin((now - t0)/3800) + 1) / 2;
+    requestAnimationFrame(idle);
+  })(t0);
+  requestAnimationFrame(render);
+})();
+</script>
+</body>
+</html>

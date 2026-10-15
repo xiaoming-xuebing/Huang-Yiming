@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs><radialGradient id="g" cx="50%" cy="38%" r="70%"><stop offset="0%" stop-color="#9ecff0"/><stop offset="100%" stop-color="#3d7ba8"/></radialGradient></defs>
+  <rect width="200" height="200" fill="url(#g)"/>
+  <rect x="40" y="60" width="120" height="80" rx="4" fill="#e8f4fc" opacity=".8"/>
+  <rect x="40" y="60" width="120" height="14" rx="4" fill="#cde6f5"/>
+  <circle cx="52" cy="67" r="3" fill="#a65f91" opacity=".8"/>
+  <circle cx="62" cy="67" r="3" fill="#8875a8" opacity=".8"/>
+  <circle cx="72" cy="67" r="3" fill="#526681" opacity=".8"/>
+  <rect x="52" y="88" width="60" height="6" fill="#b8d6ec" opacity=".7"/>
+  <rect x="52" y="102" width="90" height="6" fill="#b8d6ec" opacity=".5"/>
+  <rect x="52" y="116" width="74" height="6" fill="#b8d6ec" opacity=".6"/>
+  <text x="100" y="170" font-family="serif" font-size="12" fill="#eaf6fd" text-anchor="middle" letter-spacing="3">INTERNSHIP</text>
+</svg>

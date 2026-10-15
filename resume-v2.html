@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>黄奕铭 · RESUME</title>
+<link rel="preload" href="assets/fonts/archivo-black-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/space-grotesk-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+/* 字体本地化 (v70)：不再依赖 Google Fonts 在线加载——大标题忽粗忽细的根因就是它时通时断 */
+@font-face{font-family:"Archivo Black";font-style:normal;font-weight:400;font-display:swap;src:url("assets/fonts/archivo-black-latin.woff2") format("woff2")}
+@font-face{font-family:"Space Grotesk";font-style:normal;font-weight:400 700;font-display:swap;src:url("assets/fonts/space-grotesk-var-latin.woff2") format("woff2")}
+/* ═══════════ MIDNIGHT GALAXY · 专辑封面星空漩涡版 ═══════════ */
+@property --ice{syntax:'<color>';inherits:true;initial-value:#5EC8E8}
+@property --ice-soft{syntax:'<color>';inherits:true;initial-value:rgba(94,200,232,.55)}
+@property --a1{syntax:'<color>';inherits:true;initial-value:#5EC8E8}
+@property --a2{syntax:'<color>';inherits:true;initial-value:#7FD8CE}
+@property --a3{syntax:'<color>';inherits:true;initial-value:#8FA8F0}
+@property --a4{syntax:'<color>';inherits:true;initial-value:#B8E4F5}
+:root{
+  --bg:#000000;
+  --ice:#5EC8E8;            /* 当前主题色（JS 按专辑切换） */
+  --ice-soft:rgba(94,200,232,.55);
+  --txt:#E8EEF7;
+  --txt-dim:#8D9AB0;
+  --txt-faint:#5A6678;
+  --hair:rgba(200,215,235,.14);
+  /* 视觉焦点横向位置：唱片/黑胶/辉光(--fxd) 与 漩涡(--fx，JS cx 同步读取) 完全同心 */
+  --fx:.68;
+  --fxd:.68;
+  /* 中文标题不再用宋体系，改用高可读黑体系（变量名保留 --serif 以免改动所有引用点） */
+  --serif:"MiSans","PingFang SC","HarmonyOS Sans SC","Source Han Sans SC","Noto Sans SC","Microsoft YaHei",sans-serif;
+  --sans:"Space Grotesk","MiSans","PingFang SC","Microsoft YaHei",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--txt);
+  font-family:var(--sans);
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:rgba(94,200,232,.35)}
+
+/* ── 背景层：星空漩涡画布 + 柔和极光渐变洗（随专辑主色流动）+ 黑胶垫底 + 暗角 ── */
+#cosmos{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:1}
+/* ── 极光背景 v9 · 印刷网点极光（halftone aurora）──
+   最底层（z:0）：黑胶与星空漩涡都叠在它上面；canvas 一次性渲染静态场，
+   动效模式只做整层缓慢漂移，不逐帧重绘。 */
+.bg-aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  animation:aurIn 1.8s cubic-bezier(.16,1,.3,1) both}
+body[data-motion="1"] .bg-aurora{animation:aurIn 1.8s cubic-bezier(.16,1,.3,1) both, aurDrift 64s ease-in-out infinite alternate}
+@keyframes aurDrift{from{transform:scale(1.05) translate3d(0,0,0)}to{transform:scale(1.13) translate3d(-2.6vw,2.2vh,0)}}
+#aurora{position:absolute;inset:0;width:100%;height:100%;display:block}
+.bg-aurora u{position:absolute;display:block;will-change:auto}
+/* 顶层极细颗粒：screen 只提亮不压暗（此前 overlay 会把整体带灰变暗） */
+.bg-aurora .grain{inset:-12%;mix-blend-mode:screen;opacity:.055;will-change:auto;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:140px 140px;animation:grain 1.1s steps(5) infinite}
+@keyframes aurIn{from{opacity:0;transform:scale(1.07)}to{opacity:1;transform:scale(1)}}
+@keyframes grain{
+  0%{background-position:0 0}   20%{background-position:-14px 9px}
+  40%{background-position:8px -12px} 60%{background-position:-9px -6px}
+  80%{background-position:12px 7px}  100%{background-position:0 0}}
+/* 静止模式：?motion=0（默认，颗粒动画也停） */
+body[data-motion="0"] .bg-aurora u{animation:none!important}
+body[data-motion="0"] .bg-aurora{animation:aurIn 1.8s cubic-bezier(.16,1,.3,1) both!important}
+/* 漩涡底下的黑胶唱片（在画布之下，光轨浮在盘面外缘） */
+.vinyl{
+  position:fixed;left:calc(var(--fxd) * 100%);top:47%;transform:translate(-50%,-50%);z-index:0;
+  width:min(37vh,31vw);aspect-ratio:1;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,#161c2a 0%,#0b0f18 55%,#060910 100%);
+  box-shadow:
+    0 0 0 1px rgba(210,225,245,.10),
+    0 24px 70px rgba(0,0,0,.55),
+    inset 0 0 40px rgba(0,0,0,.6);
+}
+.v-rot{
+  position:absolute;inset:0;border-radius:50%;
+  background:
+    conic-gradient(from 0deg,transparent 0deg,rgba(200,220,255,.055) 18deg,transparent 55deg,transparent 170deg,rgba(200,220,255,.045) 205deg,transparent 260deg),
+    repeating-radial-gradient(circle,rgba(205,222,245,.05) 0 1px,transparent 1px 2.8px);
+  animation:vinylSpin 12s linear infinite;
+}
+@keyframes vinylSpin{to{transform:rotate(360deg)}}
+.vinyl::after{ /* 静态边缘高光 */
+  content:'';position:absolute;inset:0;border-radius:50%;
+  background:
+    linear-gradient(125deg,rgba(255,255,255,.10),transparent 32%),
+    radial-gradient(closest-side,transparent 78%,rgba(190,210,240,.10) 92%,transparent 100%);
+}
+/* ── 星空漩涡 × 黑胶唱片 结合模式（?vx=1/2/3，默认 0=现状：唱片隐在漩涡下） ── */
+body[data-vx="1"] .vinyl,body[data-vx="2"] .vinyl,body[data-vx="3"] .vinyl{z-index:2}
+/* vx=1 光刻唱盘：唱片以 screen 混合"印"在星云上，沟槽像光刻出来的一样叠在星轨间 */
+body[data-vx="1"] .vinyl{
+  width:min(56vh,48vw);mix-blend-mode:screen;opacity:.85;
+  box-shadow:0 0 0 1px rgba(215,230,250,.18),inset 0 0 60px rgba(150,190,235,.12);
+}
+body[data-vx="1"] .v-rot{background:
+  conic-gradient(from 0deg,transparent 0deg,rgba(215,232,255,.14) 18deg,transparent 55deg,transparent 170deg,rgba(215,232,255,.11) 205deg,transparent 260deg),
+  repeating-radial-gradient(circle,rgba(212,228,250,.17) 0 1px,transparent 1px 2.8px)}
+/* vx=2 星河绕盘：实心唱片压住漩涡内环，星轨只绕盘缘外流转，照片坐在盘心 */
+body[data-vx="2"] .vinyl{
+  box-shadow:0 0 0 1px rgba(215,230,250,.16),0 24px 70px rgba(0,0,0,.6),
+             0 0 64px var(--ice-soft),inset 0 0 40px rgba(0,0,0,.62);
+}
+body[data-vx="2"] #cosmos{opacity:.92}
+/* vx=3 沟槽星轨：唱片 lighten 混合，沟槽与星轨互相穿插（星轨长在唱片上） */
+body[data-vx="3"] .vinyl{
+  width:min(52vh,44vw);mix-blend-mode:lighten;opacity:.95;
+  box-shadow:0 0 0 1px rgba(215,230,250,.16),inset 0 0 46px rgba(0,0,0,.5);
+}
+body[data-vx="3"] .v-rot{background:
+  conic-gradient(from 0deg,transparent 0deg,rgba(220,235,255,.12) 18deg,transparent 55deg,transparent 170deg,rgba(220,235,255,.09) 205deg,transparent 260deg),
+  repeating-radial-gradient(circle,rgba(215,230,250,.14) 0 1px,transparent 1px 2.6px)}
+body[data-vx="3"] #cosmos{opacity:.8}
+#themeGlow{
+  position:fixed;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(52% 42% at calc(var(--fxd) * 100%) 46%,var(--ice-soft) 0%,transparent 66%);
+  opacity:.16;transition:background 1.6s ease;
+  mix-blend-mode:screen;
+}
+/* 切章时右侧漩涡的轻微亮度共振（body.pulse 由 JS 短暂挂上） */
+body.pulse #themeGlow{animation:vortexPulse .7s ease}
+@keyframes vortexPulse{0%{opacity:.16}30%{opacity:.30}100%{opacity:.16}}
+#vignette{
+  position:fixed;inset:0;z-index:3;pointer-events:none;
+  background:
+    radial-gradient(112% 88% at calc(var(--fx) * 100%) 48%,transparent 30%,rgba(0,0,0,.42) 62%,rgba(0,0,0,.86) 88%,#000 100%),
+    linear-gradient(to top,rgba(0,0,0,.5) 0%,transparent 26%);
+}
+
+/* ── 顶部信息条 ── */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:20;
+  display:flex;align-items:baseline;justify-content:flex-start;gap:clamp(22px,5vw,64px);
+  padding:26px 34px 0;pointer-events:none;
+}
+.tb-logo{
+  font-family:var(--sans);font-weight:700;font-size:15px;letter-spacing:.42em;
+  color:var(--txt);pointer-events:auto;text-decoration:none;
+}
+.tb-logo em{font-style:normal;color:var(--ice);transition:color 1.2s ease}
+.tb-mid{font-size:10px;letter-spacing:.34em;color:var(--txt-faint)}
+/* 联系方式移出顶栏右侧：那里是唱臂走廊，改挂右下角（唱臂下方），互不打扰 */
+.tb-right{
+  position:fixed;right:34px;bottom:26px;z-index:20;
+  display:flex;flex-direction:column;align-items:flex-end;gap:7px;pointer-events:auto;
+}
+.tb-right a{
+  color:var(--txt-dim);text-decoration:none;font-size:11px;letter-spacing:.14em;
+  transition:color .3s;
+}
+.tb-right a:hover{color:var(--ice)}
+/* v46：正文入口已并入封套下方播控条（.btn-arch），原黑胶圆钮样式作废 */
+
+/* ── 章节选择器：正方形卡片列（v48，封面方块 = 封套大小）──
+   六个章节 = 上下滑动的正方形封面卡；滚动/点击让卡片上下滑动，
+   滑到中心的卡片 = 封套同尺寸正方形（展开态封套原地让位给它），
+   其余按距离缩小变暗；点击中心卡 = 选中该章并收回，回到封套画面。
+   槽位坐标由 JS 实时计算（参数集中在 resume-v2.js 的 STRIP 里）。 */
+.strip-deck{
+  /* 卡片列中心 = 封套中心（20.5vw/45%）：滑动就发生在封套所在的位置，
+     展开时封套淡出、正方形卡片原地接棒，视线不动、动线不跳 */
+  position:fixed;left:max(20.5vw,300px);top:0;bottom:0;z-index:20;
+  width:0;                             /* 卡片自身由 JS 定尺寸，容器只是定位锚 */
+  pointer-events:none;
+  transition:opacity .45s ease,transform .45s cubic-bezier(.22,1,.36,1),visibility 0s linear 0s;
+}
+.strip{
+  position:absolute;left:50%;top:0;pointer-events:auto;cursor:pointer;
+  appearance:none;border:0;padding:0;text-align:left;display:block;border-radius:10px;overflow:hidden;
+  background:#0a0f18;
+  box-shadow:0 10px 28px rgba(0,0,0,.45),inset 0 0 0 1px rgba(214,228,248,.13);
+  transition:transform .55s cubic-bezier(.22,1,.36,1),
+             width .45s cubic-bezier(.22,1,.36,1),
+             height .45s cubic-bezier(.22,1,.36,1),
+             opacity .4s ease,filter .45s ease,box-shadow .45s ease;
+  will-change:transform;
+}
+/* 封面填满条带；左侧渐变压暗托文字 */
+.st-bg{position:absolute;inset:0;background-size:cover;background-position:center;
+  transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.st-shade{position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(7,10,18,.06) 38%,rgba(7,10,18,.42) 68%,rgba(7,10,18,.82) 100%)}
+/* 章节号 + 章节名（左下角，正方形卡内） */
+.st-meta{position:absolute;left:16px;bottom:14px;right:12px;
+  display:flex;flex-direction:column;gap:5px;min-width:0;pointer-events:none;
+  transition:opacity .35s ease}
+.st-tag{font-size:9px;letter-spacing:.3em;color:var(--acc,#5EC8E8);transition:color 1.2s ease}
+.st-name{font-family:var(--serif);font-size:14px;letter-spacing:.14em;color:var(--txt);white-space:nowrap;transition:font-size .45s cubic-bezier(.22,1,.36,1)}
+.st-sub{font-size:9px;letter-spacing:.24em;color:var(--txt-faint);text-transform:uppercase;white-space:nowrap;opacity:0;transition:opacity .4s ease}
+/* 中心卡：大标题 + 副标浮现；远处小卡只留封面不带文字 */
+.strip.ctr .st-name{font-size:22px}
+.strip.ctr .st-sub{opacity:1}
+.strip.far .st-meta{opacity:0}
+.strip.far{filter:brightness(.6) saturate(.8)}
+.st-go{position:absolute;right:18px;bottom:14px;font-size:10px;letter-spacing:.26em;color:var(--txt);
+  opacity:0;transform:translateX(-6px);transition:opacity .35s,transform .35s;pointer-events:none}
+.strip.ctr:hover .st-go{opacity:.92;transform:none}
+.strip.ctr:hover .st-bg{transform:scale(1.045)}
+/* 非中心卡退后：按距离缩小变暗（尺寸由 JS 写内联），色相保留只压亮度 */
+.strip:not(.ctr){filter:brightness(.74) saturate(.88);opacity:.66}
+.strip:not(.ctr):hover{filter:brightness(.94) saturate(.98);opacity:.9}
+/* 中心条：章节色描边微光 */
+.strip.ctr{box-shadow:0 22px 54px rgba(0,0,0,.6),inset 0 0 0 1px rgba(235,244,255,.20),0 0 26px var(--acc-glow,rgba(94,200,232,.25))}
+/* 收起态（默认）：整组隐去，画面只剩封套 */
+.strip-deck.shut{opacity:0;transform:translateY(14px) scale(.985);visibility:hidden;
+  transition:opacity .4s ease,transform .4s cubic-bezier(.22,1,.36,1),visibility 0s linear .4s}
+.strip-deck.shut .strip{pointer-events:none}
+/* 卡片列展开时：封套、胶囊、播控条整组让位淡出（展开入口已是封套本体，
+   播控条不再承担 hover 链角色，可以一起退场，画面只剩滑动卡片列） */
+.mc-pack,.mc-enter,.player{transition:opacity .45s ease}
+body.deck-open .mc-pack,body.deck-open .mc-enter,body.deck-open .player{opacity:0;pointer-events:none}
+/* 封套容器不挡条带点击：封套本体（hover 展开卡片列）、胶囊与播控条可交互 */
+.mini-case{pointer-events:none}
+.mc-pack,.mc-enter,.player{pointer-events:auto}
+body.deck-open .mini-case{z-index:60}
+/* ── 海报排版层（v59）：两行整体倾斜排版 ──
+   回归参考图的做法：整行作为一块微倾斜（字母彼此不歪），两行错开绕开封套——
+   第一行在封套左上方，第二行绕到封套右侧；海报层 z:5 在封套（z:11）之下。
+   无连字符、无中文、无问号；断行按字数灵活分（big 数组），
+   字号收敛保证第二行不伸进右侧漩涡。deck-open 压暗、reading 淡出、窄屏隐藏。 */
+.poster{
+  position:fixed;left:34px;top:104px;bottom:30px;width:min(42vw,680px);z-index:5;
+  display:flex;flex-direction:column;pointer-events:none;
+  transition:opacity .5s ease;
+}
+.pt-track{
+  font-size:9px;letter-spacing:.42em;color:rgba(240,246,252,.6);
+  text-shadow:0 1px 8px rgba(10,14,24,.55);margin-bottom:3vh;
+}
+.pt-track em{font-style:normal;color:rgba(248,250,254,.92)}
+.pt-row{
+  font-family:"Archivo Black",var(--sans);
+  font-size:clamp(54px,6.2vw,110px);line-height:1.02;letter-spacing:.01em;
+  color:rgba(248,250,254,.97);white-space:nowrap;
+  text-shadow:0 3px 10px rgba(8,12,22,.42),0 8px 30px rgba(8,12,22,.5);
+}
+/* 三段位姿（v61：不倾斜、紧凑、允许局部遮挡）：
+   p0 封套左上（右端压进封套上缘）、p1 绕到封套右侧、
+   p2/p3 紧贴着落到封套正下方（p3 是两行章专用，允许字的上缘被播控条玻璃压住一点） */
+.pt-p0{margin-top:1.2vh}
+.pt-p1{margin:.05em 0 0 60%}
+.pt-p2{margin:.7em 0 0 3%}  /* v81: 第三片段上移，离进度条远一点 */
+.pt-p3{margin:1.05em 0 0 3%}
+/* p4：右侧下沉位——两段词的下半段（FILE/JECT/LLS）放封套右侧并往下挪，落在黑胶下缘 */
+.pt-p4{font-size:clamp(50px,5.9vw,104px);margin:2em 0 0 52%}
+/* 底部密排标签：连字符分隔 + 两端对齐（参考图底部流派列表的密度感） */
+.pt-tags{
+  margin-top:auto;font-size:9px;letter-spacing:.13em;line-height:1.9;
+  color:rgba(233,240,250,.56);text-transform:uppercase;text-align:justify;
+  text-shadow:0 1px 8px rgba(10,14,24,.5);
+}
+/* 页脚：*** GALAXY ALBUM ***
+   用与封套/播放器同一中心公式（max(20.5vw,300px)）做水平居中：
+   translateX(calc(中心 - 海报左边距34px - 自身50%))，任意窗口宽度都跟住封套。
+   仍留在文档流内（不用 fixed），避免压到上面的密排标签 */
+.pt-foot{
+  display:flex;align-items:center;justify-content:center;gap:16px;margin-top:16px;
+  width:max-content;align-self:flex-start;
+  transform:translateX(calc(max(20.5vw,300px) - 34px - 50%));
+  color:rgba(238,244,252,.78);font-size:12px;letter-spacing:.34em;
+  text-shadow:0 1px 8px rgba(10,14,24,.5);
+}
+.pt-pill{
+  border:1px solid rgba(238,244,252,.55);border-radius:999px;
+  padding:3px 14px;font-size:10px;letter-spacing:.18em;
+}
+/* 展开卡片列：海报压暗，让视线聚焦卡片列 */
+body.deck-open .poster{opacity:.42}
+body.reading .poster{opacity:0}
+/* ── 中央舞台：专辑大图 + 旋转光环 ── */
+.stage{
+  position:fixed;left:calc(var(--fxd) * 100%);top:47%;transform:translate(-50%,-50%);z-index:10;
+  width:min(24vh,20vw);aspect-ratio:1;pointer-events:none;
+}
+.stage-ring{position:absolute;inset:0;pointer-events:none}
+.stage-ring i{
+  position:absolute;inset:0;border-radius:50%;
+  border:1px solid var(--ice-soft);
+  opacity:0;transform:scale(.86);
+}
+body.playing .stage-ring i{animation:ringPulse 3.2s ease-out infinite}
+body.playing .stage-ring i:nth-child(2){animation-delay:1.6s}
+@keyframes ringPulse{
+  0%{opacity:.55;transform:scale(.86)}
+  100%{opacity:0;transform:scale(1.22)}
+}
+.stage-glow{
+  position:absolute;inset:-16%;border-radius:50%;
+  background:radial-gradient(closest-side,var(--ice-soft),transparent 72%);
+  opacity:.34;filter:blur(6px);transition:background 1.2s ease;
+}
+.disc-wrap{
+  position:absolute;inset:0;border-radius:50%;
+  transition:opacity .42s ease,transform .52s cubic-bezier(.22,1,.36,1);
+}
+.disc-wrap.swap-out{opacity:0;transform:translateY(-3.5vh) scale(.92)}
+.disc-wrap.swap-in{animation:swapIn .6s cubic-bezier(.22,1,.36,1)}
+@keyframes swapIn{
+  from{opacity:0;transform:translateY(3.5vh) scale(.92)}
+  to{opacity:1;transform:none}
+}
+.disc-spin{
+  position:absolute;inset:0;border-radius:50%;overflow:hidden;
+  box-shadow:
+    0 24px 70px rgba(0,0,0,.62),
+    0 0 90px var(--ice-soft),
+    inset 0 0 0 1px rgba(225,238,252,.16);
+  /* v88：漩涡中心封面常转（原来只在播放时转，静止时突兀） */
+  animation:discSpin 24s linear infinite;
+  background:#0a0f18;
+}
+@keyframes discSpin{to{transform:rotate(360deg)}}
+.disc-img{position:absolute;inset:0;background-size:cover;background-position:center}
+.disc-sheen{
+  position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  background:
+    conic-gradient(from 210deg,transparent 0deg,rgba(255,255,255,.14) 14deg,transparent 40deg,transparent 180deg,rgba(255,255,255,.07) 200deg,transparent 228deg),
+    linear-gradient(135deg,rgba(255,255,255,.10),transparent 34%,transparent 70%,rgba(255,255,255,.05));
+  mix-blend-mode:screen;
+}
+.disc-caption{
+  position:absolute;left:50%;bottom:-38%;transform:translateX(-50%);
+  display:flex;align-items:center;white-space:nowrap;
+  background:rgba(6,10,20,.55);border:1px solid rgba(205,222,248,.15);
+  border-radius:999px;padding:8px 20px;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  box-shadow:0 10px 30px rgba(0,0,0,.5);
+}
+/* 唱片文字信息：按用户要求去掉（还不如不加） */
+.disc-caption{display:none}
+.dc-track{font-size:9.5px;letter-spacing:.34em;color:var(--ice);transition:color 1.2s ease;margin:0}
+.dc-label{font-family:var(--serif);font-size:16px;letter-spacing:.20em;color:var(--txt);margin:0 0 0 4px}
+.dc-sub{font-size:9px;letter-spacing:.28em;color:var(--txt-faint);margin:0;text-transform:uppercase}
+.dc-label::before,.dc-sub::before{content:'·';margin:0 11px;color:var(--txt-faint);font-family:var(--sans);font-style:normal}
+
+/* ── 中左：唱片封套 + 半滑出搅动光盘（参考封套构图）+ 章节入口 ── */
+.mini-case{
+  /* 20.5vw ＋ 300px 下限：封套落在左侧留白处（用户红框位置），黑胶向右半滑出 */
+  /* v63：播控条移出本组后，整组重心自然下移约 50px（正是用户蓝框位置），无需再加偏移 */
+  position:fixed;left:max(20.5vw,300px);top:45%;transform:translate(-50%,-50%);z-index:11;
+  display:flex;flex-direction:column;align-items:center;gap:20px;
+}
+.mc-pack{position:relative;width:min(25vh,22vw);aspect-ratio:1}
+/* 搅动光盘画布弃用：换成真黑胶质感的 CSS 唱片（封套封面已弃用，黑胶居中放大，卡片内缘沿它围成圆） */
+.mc-disc{display:none}
+/* v71：黑胶入口。旋转占用 .mc-vinyl 的 transform，外滑/点击交给外层 hold；
+   hold 定位继承原 vinyl（半张从封套右侧滑出），hover 再外移一小段 + 亮起细环 */
+.mc-vinyl-hold{
+  /* v76：进入界面即保持伸出约六成唱片，稳定不晃（去掉周期轻推） */
+  position:absolute;left:62%;top:50%;transform:translateY(-50%);width:88%;aspect-ratio:1;z-index:1;
+  cursor:pointer;outline:none;
+  transition:transform .55s cubic-bezier(.22,1,.36,1);
+}
+.mc-vinyl-hold:hover,.mc-vinyl-hold:focus-visible{transform:translateY(-50%) translateX(4.5%)}
+.mc-vinyl{
+  position:absolute;inset:0;aspect-ratio:auto;border-radius:50%;
+  background:
+    /* v73：章节色卡染色层——随当前专辑主色变化，黑胶成为"活的"入口 */
+    radial-gradient(circle at 50% 50%,var(--vinyl-tint,transparent) 0%,transparent 70%),
+    /* 致密黑胶沟槽：细密同心纹，黑胶质感的核心 */
+    repeating-radial-gradient(circle at 50% 50%,rgba(255,255,255,.1) 0 1px,transparent 1px 2.6px),
+    /* 分组沟槽：三道稍宽的环带，模拟真实唱片音轨分界 */
+    radial-gradient(circle closest-side,transparent 0 40%,rgba(255,255,255,.05) 43%,transparent 47%,rgba(255,255,255,.035) 62%,transparent 67%,rgba(255,255,255,.045) 82%,transparent 87%),
+    /* 左上定向反光 */
+    linear-gradient(125deg,rgba(255,255,255,.09),transparent 36%),
+    /* v74：彩色胶片基底——唱片本体以章节色为主调（不再是黑胶），入口天然突出 */
+    radial-gradient(circle at 50% 46%,color-mix(in srgb,var(--vinyl-acc) 40%,#12161f) 0%,color-mix(in srgb,var(--vinyl-acc) 26%,#0a0d14) 55%,color-mix(in srgb,var(--vinyl-acc) 16%,#07090e) 100%);
+  box-shadow:0 10px 30px rgba(0,0,0,.6),0 0 36px var(--vinyl-glow,var(--ice-soft)),inset 0 0 0 1px rgba(235,244,255,.26);
+  transition:box-shadow .45s ease;
+  animation:mcVinylSpin 10s linear infinite;
+}
+/* hover：章节色细环贴缘亮起，宣告"这是入口" */
+.mc-vinyl-hold:hover .mc-vinyl,.mc-vinyl-hold:focus-visible .mc-vinyl{
+  box-shadow:0 10px 30px rgba(0,0,0,.6),0 0 34px var(--vinyl-glow,var(--ice-soft)),0 0 0 1.5px var(--vinyl-acc,var(--ice)),inset 0 0 0 1px rgba(235,244,255,.3);
+}
+/* 旋转的镜面光弧：让沟槽上有"光在走"的黑胶反光 */
+.mc-vinyl::before{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(from 210deg,transparent 0deg,rgba(255,255,255,.15) 11deg,transparent 32deg,transparent 178deg,rgba(255,255,255,.08) 194deg,transparent 218deg);
+  mix-blend-mode:screen;
+}
+/* 外缘一圈章节色微光 + 中心标签圆盘染章节色（大部分藏在封套后） */
+.mc-vinyl::after{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  background:
+    radial-gradient(closest-side,transparent 62%,var(--vinyl-glow,var(--ice-soft)) 78%,transparent 92%),
+    radial-gradient(closest-side,var(--vinyl-acc,var(--ice)) 0 26%,transparent 32%);
+  opacity:.72;mix-blend-mode:screen;
+}
+@keyframes mcVinylSpin{to{transform:rotate(360deg)}}
+/* 入口标签：悬停时浮现在唱片露出区中心（不随唱片旋转，左半有封套故右偏） */
+.mc-enter-tag{
+  position:absolute;left:66%;top:50%;transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  font-size:8.5px;letter-spacing:.34em;color:var(--vinyl-acc,var(--ice));text-indent:.34em;
+  padding:10px 14px;border-radius:999px;background:rgba(8,12,22,.55);
+  border:1px solid var(--vinyl-glow,var(--ice-soft));
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  opacity:0;transition:opacity .35s ease;pointer-events:none;white-space:nowrap;
+  text-shadow:0 1px 8px rgba(0,0,0,.8);
+}
+.mc-enter-tag b{font-size:11px;font-weight:600;letter-spacing:.46em;text-indent:.46em;color:var(--txt)}
+.mc-vinyl-hold:hover .mc-enter-tag,.mc-vinyl-hold:focus-visible .mc-enter-tag{opacity:1}
+/* v73：默认态常驻迷你圆标——挂在封套层、正对唱片圆心（像唱片中心标一样融合），
+   随章节色卡染色 + 呼吸；hover 唱片时让位给完整 ENTER 标签（JS 加 body.vinyl-hot） */
+.mc-entry-dot{
+  position:absolute;left:106%;top:50%;transform:translate(-50%,-50%);
+  width:52px;height:52px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:color-mix(in srgb,var(--vinyl-acc) 30%,rgba(8,12,22,.72));color:#fff;
+  border:2px solid #fff;
+  backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--vinyl-acc) 55%,transparent),0 0 24px var(--vinyl-glow,var(--ice-soft));
+  opacity:.92;transition:opacity .3s ease;pointer-events:none;z-index:3;
+}
+.mc-entry-dot svg{width:29px;height:29px;fill:currentColor}  /* v100c: 三角再放大 */
+/* v100：光晕外扩——两圈交错扩散（无亮暗呼吸，圆标常亮），像声波一样往外推 */
+.mc-entry-dot::before,.mc-entry-dot::after{
+  content:'';position:absolute;inset:-6px;border-radius:50%;
+  border:1.5px solid var(--vinyl-glow,var(--ice-soft));
+  filter:blur(.6px);
+  animation:entryPulse 3s cubic-bezier(.2,.6,.4,1) infinite;pointer-events:none;
+}
+.mc-entry-dot::before{animation-delay:1.5s}
+@keyframes entryPulse{0%{transform:scale(.68);opacity:.85}75%{transform:scale(1.7);opacity:0}100%{transform:scale(1.7);opacity:0}}
+body.vinyl-hot .mc-entry-dot{opacity:0;animation:none}
+/* v85：弹带触发区——只盖封面左侧 54%，右缘贴近黑胶的区域不感应，
+   鼠标移向黑胶入口时不再擦到触发区弹出章节条带 */
+.mc-hotzone{position:absolute;left:0;top:0;width:54%;height:100%;z-index:3}
+/* v85：封套左下角的章节中文名，随章节切换 */
+.mc-cover-tag{
+  /* v95：无底、字直接印在封面上，颜色按封面明暗适配（JS 设 --tag-ink/--tag-shadow） */
+  position:absolute;left:13px;bottom:12px;z-index:2;
+  display:flex;flex-direction:column;gap:3px;
+  color:var(--tag-ink,#fff);text-shadow:var(--tag-shadow,0 1px 10px rgba(0,0,0,.55));
+}
+.mc-cover-tag span{font-family:var(--mono,monospace);font-size:8px;letter-spacing:.32em;opacity:.72}
+.mc-cover-tag em{font-style:normal;font-weight:800;font-size:15px;letter-spacing:.2em}
+/* 封套封面（当前章节封面，方形，盖住黑胶左半） */
+.mc-sleeve{
+  position:absolute;inset:0;z-index:2;border-radius:4px;
+  background-size:cover;background-position:center;
+  box-shadow:0 18px 44px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.15);
+}
+/* 章节入口胶囊：进入章节 · 个人信息 → */
+.mc-enter{
+  appearance:none;cursor:pointer;display:flex;align-items:center;gap:10px;
+  background:rgba(10,15,26,.64);border:1px solid var(--ice-soft);border-radius:999px;
+  color:var(--txt);font-size:11px;letter-spacing:.24em;padding:11px 22px;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  transition:opacity .45s ease,border-color 1.2s ease,background .3s,transform .3s,box-shadow .3s;
+}
+.mc-enter:hover{background:rgba(150,190,235,.12);transform:translateY(-1px);box-shadow:0 6px 20px var(--ice-soft)}
+.mc-enter .arr{color:var(--ice);transition:color 1.2s ease,transform .3s}
+.mc-enter:hover .arr{transform:translateX(3px)}
+/* 极简播放器（v63）：脱离封套组，固定在左下角空白带（用户长红框处），
+   横排一行、不要底板/边框——靠文字与图标投影在任何背景上都看得清，
+   读起来更像海报版式里的一行信息，不抢画面。 */
+.player{
+  /* left 与封套 .mini-case 同公式 + translateX(-50%)：
+     进度条与按键整组跟封套中心对齐，任意窗口宽度都自动跟住封套 */
+  position:fixed;left:max(20.5vw,300px);transform:translateX(-50%);
+  bottom:126px;z-index:12;
+  width:min(480px,34vw);padding:0;box-sizing:border-box;
+  background:none;border:none;border-radius:0;
+  backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none;
+}
+.deckrow{display:flex;flex-direction:column;gap:8px}
+.progress{flex:1;min-width:0}
+.player .t,.player .progress{text-shadow:0 1px 8px rgba(8,12,22,.75),0 0 3px rgba(8,12,22,.5)}
+.player .ctrl{filter:drop-shadow(0 1px 6px rgba(8,12,22,.7))}
+.progress{display:flex;align-items:center;gap:8px}
+.progress .t{font-size:8.5px;letter-spacing:.08em;color:rgba(206,220,240,.78);font-variant-numeric:tabular-nums;min-width:28px}
+.progress .t:last-child{text-align:right}
+#seek{
+  flex:1;appearance:none;-webkit-appearance:none;height:18px;background:transparent;
+  outline:none;cursor:pointer;
+  filter:drop-shadow(0 0 0 transparent);transition:filter .5s ease;
+}
+body.playing #seek{filter:drop-shadow(0 0 7px var(--ice-soft))}
+#seek::-webkit-slider-runnable-track{
+  height:4px;border-radius:2px;
+  background:linear-gradient(90deg,var(--ice) 0%,#F0FAFF var(--fill,0%),rgba(190,205,228,.13) var(--fill,0%));
+}
+#seek::-webkit-slider-thumb{
+  appearance:none;-webkit-appearance:none;width:11px;height:11px;border-radius:50%;
+  margin-top:-3.5px;background:#F4FAFF;border:1.5px solid rgba(255,255,255,.92);
+  box-shadow:0 0 0 3px rgba(94,200,232,.18),0 0 12px var(--ice-soft);
+  transition:transform .2s ease;
+}
+#seek:hover::-webkit-slider-thumb{transform:scale(1.18)}
+#seek::-moz-range-track{height:4px;border-radius:2px;background:rgba(190,205,228,.13)}
+#seek::-moz-range-progress{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--ice),#F0FAFF)}
+#seek::-moz-range-thumb{width:10px;height:10px;border-radius:50%;background:#F4FAFF;border:1.5px solid rgba(255,255,255,.92);box-shadow:0 0 0 3px rgba(94,200,232,.18)}
+.ctrl{display:flex;align-items:center;justify-content:center;gap:6px}
+.ctrl button{
+  appearance:none;background:none;border:1px solid transparent;border-radius:50%;
+  flex:none;width:30px;height:30px;display:grid;place-items:center;cursor:pointer;
+  color:var(--txt-dim);transition:color .3s,border-color .3s,background .3s;
+}
+.ctrl button:hover{color:var(--txt);background:rgba(150,190,235,.08)}
+.ctrl button svg{width:14px;height:14px;fill:currentColor}
+/* 播放键 = 章节主入口 (v70)：放大 + 冰蓝辉光 + 呼吸脉冲环，播放即进入章节 */
+#btnPlay{position:relative;width:32px;height:32px;color:rgba(244,250,255,.75);border-color:rgba(148,205,240,.3);background:rgba(120,190,235,.09);box-shadow:0 0 8px rgba(94,200,232,.2),0 0 1px rgba(240,250,255,.6);margin:0 6px}
+#btnPlay svg{width:12px;height:12px}
+#btnPlay:hover{color:#F4FAFF;border-color:rgba(148,205,240,.55);background:rgba(120,190,235,.16);box-shadow:0 0 16px rgba(94,200,232,.38)}
+@keyframes playPulse{0%{transform:scale(.8);opacity:.85}75%{transform:scale(1.24);opacity:0}100%{transform:scale(1.24);opacity:0}}
+/* 已进入章节, 停止脉冲 */
+.enterHint{margin-top:8px;text-align:center;font-size:9.5px;letter-spacing:.3em;color:rgba(206,220,240,.85);text-shadow:0 1px 8px rgba(8,12,22,.75),0 0 3px rgba(8,12,22,.5);transition:opacity .5s ease}
+.enterHint #enterLabel{color:#9ad7f5}
+body.reading .enterHint{opacity:0}   /* 进入正文后提示淡出 */
+#btnList.on{color:var(--ice);background:rgba(150,190,235,.12)}
+#arm3d{
+  position:fixed;inset:0;width:100%;height:100%;z-index:12;pointer-events:none;
+}
+#arm3dNotice{
+  position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:60;
+  max-width:92vw;display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;
+  background:rgba(10,16,32,.82);border:1px solid rgba(200,169,106,.55);border-radius:3px;
+  color:rgba(220,228,242,.9);font-size:12px;letter-spacing:.06em;line-height:1.6;
+  padding:10px 18px;backdrop-filter:blur(6px);
+}
+#arm3dNotice[hidden]{display:none!important}
+#arm3dNotice button{
+  appearance:none;cursor:pointer;white-space:nowrap;
+  border:1px solid rgba(200,169,106,.6);background:rgba(200,169,106,.12);
+  color:#e0c489;font-size:11px;letter-spacing:.1em;
+  padding:6px 14px;border-radius:2px;transition:all .25s ease;
+}
+#arm3dNotice button:hover{background:rgba(200,169,106,.22);color:#fff}
+
+/* ── 归档视图（简历正文）：背景透出主页面极光+星漩，前景唱机淡出 ── */
+.archive{position:fixed;inset:0;z-index:40;display:none;overflow-y:auto;background:transparent}
+.archive.on{display:block}
+/* 阅读模式：淡出唱机前景与星漩/暗角，只留极光背景并整体提亮 */
+.topbar,.float-deck,.stage,.mini-case,#arm3d,.vinyl,.m-enter,.strip-deck,.player{transition:opacity .5s ease}
+#cosmos,#vignette{transition:opacity .5s ease}
+.bg-aurora{transition:filter .5s ease}
+body.reading .topbar,body.reading .float-deck,body.reading .stage,
+body.reading .mini-case,body.reading #arm3d,body.reading .vinyl,
+body.reading .m-enter,body.reading .strip-deck,body.reading .player{opacity:0;pointer-events:none}
+body.reading #cosmos,body.reading #vignette{opacity:0}   /* 星漩/暗角不进详情页 */
+body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
+.arch-back{
+  position:fixed;top:24px;left:34px;z-index:50;
+  background:rgba(9,13,22,.6);border:1px solid var(--hair);border-radius:20px;
+  color:var(--txt-dim);font-size:11px;letter-spacing:.22em;padding:9px 18px;cursor:pointer;
+  backdrop-filter:blur(10px);transition:color .3s,border-color .3s;display:none;
+}
+.archive.on ~ .arch-back,.arch-back.on{display:block}
+.arch-back:hover{color:var(--ice);border-color:var(--ice-soft)}
+/* 章节背景层：极光为主体（已提亮），封面只做轻染色；上面盖的是低透明白纱，不用黑 */
+.arch-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.arch-bgimg{position:absolute;inset:-12%;display:block;
+  background-position:center;background-size:cover;
+  filter:blur(90px) saturate(1.3) brightness(1.05);transform:scale(1.2);
+  opacity:.30;transition:opacity .6s ease}
+.arch-bgveil{position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.09) 45%,rgba(255,255,255,.16))}
+/* 详情页排版（参考 TAME IMPALA）：左黑胶 + 右正文，右上大标题，左上唯一退出键 */
+/* 详情页排版（参考 TAME IMPALA）：左侧一枚顶天立地的大黑胶（只露一半）+ 右侧正文，右上大标题 */
+.archive{--txt:#16202E;--txt-dim:#3D4B5F;--txt-faint:#6A798C;
+  --ice:#0E4F6E;--ice-soft:rgba(14,79,110,.34);--hair:rgba(20,32,48,.16)}
+.arch-inner{max-width:1180px;margin:0 auto;padding:96px 48px 120px;position:relative;z-index:1}
+.arch-grid{display:grid;grid-template-columns:clamp(200px,58vh,470px) 1fr;gap:56px;align-items:start}
+/* 黑胶：直径=视口高度，固定垂直居中（上下顶满），左半在屏幕外；不随正文滚动 */
+.arch-side{position:relative}
+.arch-pack{position:relative;width:0}
+.arch-vinyl{
+  position:fixed;top:50%;left:0;transform:translateY(-50%);
+  width:100vh;height:100vh;margin-left:-41vh;border-radius:50%;
+  background:repeating-radial-gradient(circle at 50% 50%,#0c0c10 0 2.6px,#191922 2.6px 5.2px);
+  box-shadow:0 30px 90px rgba(0,0,0,.5),inset 0 0 90px rgba(0,0,0,.6);
+}
+.av-rot{position:absolute;inset:0;border-radius:50%;display:block;animation:avSpin 9s linear infinite}
+.av-label{position:absolute;left:33.5%;top:33.5%;width:33%;height:33%;border-radius:50%;display:block;
+  background-position:center;background-size:cover;box-shadow:0 0 0 2px rgba(255,255,255,.08)}
+.av-hole{position:absolute;left:48.8%;top:48.8%;width:2.4%;height:2.4%;border-radius:50%;display:block;
+  background:#050508;box-shadow:0 0 0 1px rgba(255,255,255,.14)}
+.av-sheen{position:absolute;inset:0;border-radius:50%;display:block;
+  background:conic-gradient(from 215deg,transparent 0 38deg,rgba(255,255,255,.07) 54deg,transparent 74deg 198deg,rgba(255,255,255,.055) 220deg,transparent 242deg)}
+@keyframes avSpin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.av-rot{animation:none}}
+.arch-main{padding-top:56px;min-width:0}
+.arch-hugeno{font-size:11px;letter-spacing:.34em;color:var(--ice);text-transform:uppercase;margin-bottom:6px}
+.arch-huge{font-size:clamp(44px,6.4vw,88px);font-weight:700;letter-spacing:.05em;line-height:1.04;
+  color:var(--txt);margin:0 0 34px;text-shadow:0 2px 30px rgba(255,255,255,.55)}
+.arch-body .arch-no,.arch-body .arch-title,.arch-body .arch-sub{display:none}
+.arch-body .arch-sec{margin-bottom:0}
+.archive .arch-sec p,.archive .arch-sec li{color:#26333F}
+.archive .arch-contact a{color:var(--txt);border-bottom-color:var(--ice-soft)}
+.arch-no{font-size:10px;letter-spacing:.40em;color:var(--ice);text-transform:uppercase}
+.arch-title{font-family:var(--serif);font-size:34px;font-weight:600;letter-spacing:.14em;color:var(--txt);margin:10px 0 4px}
+.arch-sub{font-size:11px;letter-spacing:.30em;color:var(--txt-faint);text-transform:uppercase;margin-bottom:30px}
+.arch-rule{height:1px;background:linear-gradient(90deg,var(--ice-soft),transparent);margin-bottom:34px}
+.arch-sec p,.arch-sec li{font-size:14.5px;line-height:2.05;color:#C4CEDE;letter-spacing:.04em}
+.arch-sec b{color:var(--txt);font-weight:600}
+.arch-sec ul{list-style:none}
+.arch-sec li{padding-left:22px;position:relative;margin-bottom:14px}
+.arch-sec li::before{content:'';position:absolute;left:2px;top:14px;width:6px;height:6px;border-radius:50%;background:var(--ice);opacity:.75}
+.a-card{
+  border:1px solid var(--hair);border-radius:14px;padding:22px 26px;margin-bottom:22px;
+  background:rgba(140,175,220,.045);
+}
+/* 详情页：底被白纱提亮，卡片改半透明白底，深色字才读得清 */
+.archive .a-card{background:rgba(255,255,255,.56)}
+.a-badge{display:inline-block;font-size:10px;letter-spacing:.18em;color:var(--ice);border:1px solid var(--ice-soft);border-radius:12px;padding:3px 12px;margin-bottom:12px}
+.a-h3{font-family:var(--serif);font-size:19px;letter-spacing:.10em;color:var(--txt);margin-bottom:6px}
+.a-meta{font-size:11.5px;letter-spacing:.10em;color:var(--txt-dim);margin-bottom:4px}
+.a-year{font-size:11px;letter-spacing:.14em;color:var(--txt-faint)}
+/* 数据指标块 / 技能标签：与线上简历一致的信息颗粒 */
+.a-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:20px}
+.a-stat{border:1px solid var(--hair);border-radius:12px;padding:14px 16px;background:rgba(255,255,255,.42)}
+.a-stat b{display:block;font-size:26px;font-weight:700;letter-spacing:.02em;color:var(--txt);line-height:1.15}
+.a-stat em{display:block;font-style:normal;font-size:10.5px;letter-spacing:.16em;color:var(--txt-dim);margin-top:7px}
+.a-stat span{display:block;font-size:10px;letter-spacing:.12em;color:var(--txt-faint);margin-top:4px}
+.a-tags{display:flex;flex-wrap:wrap;gap:8px}
+.a-tag{font-style:normal;font-size:12.5px;letter-spacing:.06em;color:var(--txt);
+  background:rgba(255,255,255,.5);border:1px solid var(--hair);border-radius:14px;padding:6px 14px}
+/* 项目细节卷：示意图 / 流程图 / 文件树 */
+.a-figure{margin-top:16px;border:1px solid var(--hair);border-radius:12px;background:rgba(255,255,255,.6);
+  padding:14px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.a-figure img{max-width:100%;max-height:72vh;width:auto;border-radius:8px;box-shadow:0 10px 34px rgba(20,30,45,.18)}
+.a-figure svg{width:min(100%,430px);height:auto}
+.a-figure video{display:block;width:100%;max-height:72vh;border-radius:8px;background:#0d1420}
+.a-vidph{display:flex;align-items:center;justify-content:center;width:100%;height:150px;
+  border:1px dashed rgba(120,150,180,.55);border-radius:8px;
+  font-size:11px;letter-spacing:.22em;color:var(--txt-faint)}
+.a-cap{font-size:10.5px;letter-spacing:.14em;color:var(--txt-faint);text-align:center;margin:0}
+.a-tree{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;line-height:1.9;color:#26333F;
+  background:rgba(226,235,245,.65);border-radius:8px;padding:14px 18px;margin:0;align-self:stretch;
+  white-space:pre;overflow-x:auto}
+.a-docs{margin-top:16px;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.a-docs-t{font-size:10.5px;letter-spacing:.14em;color:var(--txt-faint);margin-right:4px}
+.a-doc{font-size:12.5px;color:var(--txt);text-decoration:none;border:1px solid var(--hair);border-radius:999px;
+  padding:5px 12px;background:rgba(255,255,255,.55);transition:color .3s,border-color .3s}
+.a-doc:hover{color:var(--ice);border-color:var(--ice-soft)}
+/* 项目细节卷：md 文档全文平铺内嵌（无内滚小窗，随页面直接阅读，可折叠） */
+.a-mdwrap{margin-top:16px;border:1px solid var(--hair);border-radius:12px;background:rgba(255,255,255,.72);overflow:hidden;
+  box-shadow:0 6px 22px rgba(20,30,45,.08)}
+.a-mdhead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;
+  font-size:11.5px;font-weight:600;letter-spacing:.08em;color:#26333F;list-style:none;
+  border-bottom:1px solid var(--hair);background:rgba(226,235,245,.65)}
+.a-mdhead::-webkit-details-marker{display:none}
+.a-mdwrap:not([open]) .a-mdhead{border-bottom:none}
+.a-mdhead em{font-style:normal;font-size:10px;font-weight:400;letter-spacing:.14em;color:var(--txt-faint);white-space:nowrap}
+.a-md{padding:12px 18px 18px;font-size:12.8px;line-height:1.78;color:#26333F}
+.a-md .mdh{font-weight:700;color:#16283F;margin:12px 0 6px}
+.a-md .mdh:first-child{margin-top:2px}
+.a-md .mdh1{font-size:15.5px}.a-md .mdh2{font-size:14px}.a-md .mdh3{font-size:13px}.a-md .mdh4{font-size:12.5px}
+.a-md .mdp{margin:6px 0}
+.a-md .mdlist{margin:6px 0 6px 18px;padding:0}
+.a-md .mdlist li{margin:3px 0}
+.a-md code{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;background:rgba(90,120,160,.13);
+  border-radius:4px;padding:1px 5px}
+.a-md .mdhr{border:none;border-top:1px solid var(--hair);margin:10px 0}
+.a-md .mdtable{border-collapse:collapse;width:100%;margin:8px 0;font-size:12px}
+.a-md .mdtable th,.a-md .mdtable td{border:1px solid var(--hair);padding:5px 8px;text-align:left;vertical-align:top}
+.a-md .mdtable th{background:rgba(90,120,160,.1);white-space:nowrap}
+.a-mdfoot{padding:2px 18px 14px;font-size:11.5px;letter-spacing:.06em}
+.a-mdfoot a{color:var(--txt);text-decoration:none;border-bottom:1px solid var(--ice-soft);padding-bottom:2px;transition:color .3s}
+.a-mdfoot a:hover{color:var(--ice)}
+.arch-contact{display:flex;flex-wrap:wrap;gap:14px 34px;margin-top:10px}
+.arch-contact a{color:var(--txt);font-size:15px;letter-spacing:.08em;text-decoration:none;border-bottom:1px solid var(--ice-soft);padding-bottom:3px;transition:color .3s}
+.arch-contact a:hover{color:var(--ice)}
+
+/* ── Toast ── */
+.toast{
+  position:fixed;left:50%;bottom:calc(3.2vh + 96px);transform:translateX(-50%) translateY(8px);
+  z-index:60;background:rgba(10,15,26,.92);border:1px solid rgba(220,120,120,.4);
+  color:#E8B8B8;font-size:12px;letter-spacing:.08em;padding:10px 20px;border-radius:10px;
+  opacity:0;pointer-events:none;transition:opacity .35s,transform .35s;
+}
+.toast.show{opacity:1;transform:translateX(-50%)}
+
+/* ── 窄屏专属入口：手机上黑胶/胶囊入口都在 .mini-case 里被隐藏，补一个移动端进入按钮 ── */
+.m-enter{
+  display:none;position:fixed;left:50%;transform:translateX(-50%);z-index:30;
+  align-items:center;gap:10px;padding:11px 22px;border-radius:999px;
+  border:1px solid rgba(214,232,250,.42);background:rgba(10,18,34,.55);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  color:#eaf3fc;font-size:13px;letter-spacing:.14em;cursor:pointer;
+  box-shadow:0 6px 24px rgba(0,0,0,.35);white-space:nowrap}
+.m-enter .arr{transition:transform .3s ease}
+.m-enter:active .arr{transform:translateX(4px)}
+
+/* ── 窄屏「正在播放」面板：章节名 + 查看入口（.player 窄屏重构为音乐App样式） ── */
+.np{display:none}
+.np-l{min-width:0}
+.np-track{display:block;font-size:9px;letter-spacing:.32em;color:var(--ice)}
+.np-name{display:block;font-family:var(--serif);font-size:21px;letter-spacing:.12em;color:var(--txt);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.np-enter{flex:none;display:flex;align-items:center;padding:9px 13px;border-radius:999px;
+  border:1px solid rgba(214,232,250,.4);background:rgba(20,32,56,.5);color:#eaf3fc;
+  font-family:var(--sans);font-size:12px;letter-spacing:.1em;cursor:pointer;white-space:nowrap}
+.np-enter:active{transform:translateY(1px)}
+
+/* ── 响应式 ── */
+@media (max-width:900px){
+  .tb-mid{display:none}
+  /* 窄屏：章节小条横排其上，联系方式再上移 */
+  /* 窄屏：联系方式移到顶栏下方（底部让位给播放面板与章节条） */
+  .tb-right{right:auto;left:50%;transform:translateX(-50%);bottom:auto;
+    top:calc(54px + env(safe-area-inset-top,0px));
+    flex-direction:row;align-items:center;gap:18px}
+  /* 窄屏退出条带选择器：回退为底部横排小条（JS 也停发坐标变量） */
+  .strip-deck{inset:auto;left:0;right:0;top:auto;bottom:calc(3.2vh + 12px + env(safe-area-inset-bottom,0px));
+    width:auto;height:auto;display:flex;flex-direction:row;gap:8px;overflow-x:auto;
+    padding:4px 3.5%;scrollbar-width:none;scroll-snap-type:x proximity;
+    -webkit-overflow-scrolling:touch;transform:none}
+  .strip-deck::-webkit-scrollbar{display:none}
+  .strip{position:static;flex:0 0 auto;width:148px!important;height:64px!important;transform:none!important;scroll-snap-align:center}
+  .strip-deck.shut{opacity:1;transform:none;visibility:visible;transition:none}
+  .strip-deck.shut .strip{pointer-events:auto}
+  .strip:not(.ctr){filter:none;opacity:1}
+  .st-sub,.st-go{display:none}
+  .st-meta{left:10px}
+  .st-name{font-size:12px}
+  .strip.ctr .st-name{font-size:12px}
+  .mini-case{display:none}
+  /* 音乐App式播放区：无边框不加底，控件直接浮在背景上（投影保可读） */
+  .player{display:block;left:50%;transform:translateX(-50%);bottom:calc(3.2vh + 130px + env(safe-area-inset-bottom,0px));
+    width:min(92vw,440px);padding:0;border-radius:0;
+    background:none;border:none;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none}
+  .np{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  /* 「查看本章」：白字宋体，比章名小一号，文字底边与章名对齐 */
+  .np{align-items:flex-end}
+  .np-l .np-name{line-height:1.15}
+  .np-enter{background:none;border:none;padding:0 2px;box-shadow:none;
+    -webkit-backdrop-filter:none;backdrop-filter:none;border-radius:0;
+    color:#fff;font-family:var(--serif);font-size:15px;font-weight:400;line-height:1.15;
+    letter-spacing:.16em;text-shadow:0 2px 12px rgba(8,12,22,.9)}
+  .np-enter:active{opacity:.7}
+  .np-track{color:#a5ddf5;text-shadow:0 1px 6px rgba(8,12,22,.85)}
+  .np-name{text-shadow:0 2px 10px rgba(8,12,22,.8)}
+  .player .enterHint{display:none}   /* 「点右侧黑胶」提示在手机上无意义 */
+  .player .t{font-size:10px}
+  .player .ctrl button{width:38px;height:38px}
+  .player .ctrl button svg{width:18px;height:18px}
+  /* 页码点：第1页=唱机，第2页=本章详情（对标音乐App顶部指示点） */
+  .dots{display:flex;position:fixed;top:calc(88px + env(safe-area-inset-top,0px));
+    left:50%;transform:translateX(-50%);z-index:26;gap:7px}
+  .dots i{width:6px;height:6px;border-radius:50%;background:rgba(210,225,245,.30);
+    transition:background .4s,box-shadow .4s,transform .4s}
+  .dots i:first-child{background:#dceeff;box-shadow:0 0 8px rgba(160,215,250,.85);transform:scale(1.18)}
+  body.reading .dots i:first-child{background:rgba(210,225,245,.30);box-shadow:none;transform:none}
+  body.reading .dots i:last-child{background:#dceeff;box-shadow:0 0 8px rgba(160,215,250,.85);transform:scale(1.18)}
+  /* 详情页在窄屏从右侧滑入/滑出（配合左右滑手势） */
+  .archive{opacity:0;visibility:hidden;transform:translateX(9vw);
+    transition:opacity .45s ease,transform .45s var(--ease),visibility 0s linear .45s}
+  .archive.on{opacity:1;visibility:visible;transform:none;
+    transition:opacity .45s ease,transform .45s var(--ease)}
+  /* 同心修正：窄屏星漩画布锚定 (50%,40%)（resume-v2.js layout: cy=H*0.40），封面/黑胶必须同点；
+     --fx 同步归中，themeGlow/vignette 高光不再偏在桌面 68% 处。
+     封面圆收小：桌面封面/漩涡 ≈0.22，手机 0.57 显得撑满，收到 ≈0.45 */
+  :root{--fx:.5;--fxd:.5}
+  /* 漩涡/封面上移到 40%（与 js layout cy 同步）：底部是播放面板，重心上移构图才平衡 */
+  .stage{top:40%;left:50%;width:min(36vw,26vh)}
+  .vinyl{left:50%;top:40%;width:min(64vw,44vh)}
+  #themeGlow{background:radial-gradient(52% 42% at calc(var(--fxd)*100%) 40%,var(--ice-soft) 0%,transparent 66%)}
+  #vignette{background:
+    radial-gradient(112% 88% at calc(var(--fx)*100%) 41%,transparent 30%,rgba(0,0,0,.42) 62%,rgba(0,0,0,.86) 88%,#000 100%),
+    linear-gradient(to top,rgba(0,0,0,.5) 0%,transparent 26%)}
+  /* 进入入口已并入播放面板的「查看本章」按钮与上滑手势 */
+  .arch-inner{padding:96px 24px 110px}
+  .arch-grid{grid-template-columns:1fr;gap:44px}
+  .arch-side{position:static;height:auto;padding:0;justify-content:center}
+  .arch-pack{width:100%;display:flex;justify-content:center}
+  .arch-vinyl{position:relative;top:auto;left:auto;transform:none;margin-left:0;
+    width:min(62vw,300px);height:min(62vw,300px)}
+  .arch-main{padding-top:0}
+  /* 窄屏：封套组件与入口按钮一并隐藏（主卡/播放器面板接管） */
+  .poster{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .disc-spin,.stage-ring i,.bg-aurora u,.v-rot,.mc-vinyl,.mc-vinyl-hold,.mc-entry-dot{animation:none!important}
+  *{transition-duration:.01ms!important}
+}
+
+</style>
+</head>
+<body>
+
+<canvas id="cosmos"></canvas>
+<div class="bg-aurora" aria-hidden="true">
+  <canvas id="aurora"></canvas>
+  <u class="grain"></u>
+</div>
+<div id="themeGlow"></div>
+<div class="vinyl" aria-hidden="true"><i class="v-rot"></i></div>
+<div id="vignette"></div>
+
+<!-- 顶部信息条 -->
+<header class="topbar">
+  <a class="tb-logo" href="#" id="logoHome">RES<em>UME</em></a>
+  <span class="tb-mid">HUANG YIMING · AI PRODUCT MANAGER INTERN</span>
+  <nav class="tb-right">
+    <a href="tel:18874222139">tel：18874222139</a>
+    <a href="mailto:hymxiaoming@163.com">hymxiaoming@163.com</a>
+  </nav>
+</header>
+
+<!-- 章节条带选择器：JS 部署六条上下堆叠的章节条带（默认收起，由列表键唤出） -->
+<nav class="strip-deck shut" id="stripDeck" aria-label="章节列表"></nav>
+
+<!-- 海报排版层（v60）：多行交错标题（JS 按章生成 2~3 行，绕封套上/右/下）+ 密排标签 + 星标页脚 -->
+<div class="poster" aria-hidden="true">
+  <p class="pt-track">DOLLHOUSE · SIDE A — <em id="ptTrack">TRACK 01</em></p>
+  <div id="ptRows"></div>
+  <p class="pt-tags">Multi-Agent - RAG - LLM Fine-Tuning - Prompt Engineering - LLM-as-a-Judge - Evaluation Datasets - Python - SQL - Coze - Dify - Vibe Coding - Agent Evaluation - Product Design - AI Product Manager - Etc.</p>
+  <div class="pt-foot"><span>***</span><span class="pt-pill">GALAXY ALBUM</span><span>***</span></div>
+</div>
+
+<!-- 中央舞台 -->
+<main class="stage" id="stage">
+  <div class="stage-glow"></div>
+  <div class="stage-ring" aria-hidden="true"><i></i><i></i></div>
+  <div class="disc-wrap" id="discWrap">
+    <div class="disc-spin">
+      <div class="disc-img" id="discImg"></div>
+      <div class="disc-sheen"></div>
+    </div>
+  </div>
+  <div class="disc-caption">
+    <p class="dc-track" id="dcTrack">TRACK 01</p>
+    <p class="dc-label" id="dcLabel">个人信息</p>
+    <p class="dc-sub" id="dcSub">Profile</p>
+  </div>
+</main>
+
+<!-- 中左：唱片封套 + 半滑出黑胶 —— 默认画面的主角（章节卡环默认收起，由列表键唤出） -->
+<aside class="mini-case" id="miniCase">
+  <div class="mc-pack">
+    <canvas id="mcCanvas" class="mc-disc"></canvas>
+    <!-- v71：黑胶=章节入口。旋转占用 transform，外滑位移交给外层 hold；标签放 hold 不随唱片转 -->
+    <div class="mc-vinyl-hold" id="mcVinyl" role="button" aria-label="进入章节" tabindex="0">
+      <i class="mc-vinyl" aria-hidden="true"></i>
+      <span class="mc-enter-tag" aria-hidden="true">ENTER<b>进入章节</b></span>
+    </div>
+    <!-- v73：迷你圆标挂在封套层（z 高于黑胶）才能正对唱片圆心不被封面裁切；随章节色卡染色 -->
+    <div class="mc-sleeve" id="mcSleeve">
+      <span class="mc-entry-dot" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></span>
+      <b class="mc-cover-tag" id="mcCoverTag" aria-hidden="true"><span id="mcCoverTrack">TRACK 01</span><em id="mcCoverName">个人信息</em></b>
+    </div>
+    <!-- v85：弹带触发区收窄到封面左侧——右缘到黑胶之间留出安静通道，去点黑胶不误触弹带 -->
+    <i class="mc-hotzone" aria-hidden="true"></i>
+  </div>
+<!-- v71：封面 hover=选专辑（弹条带），黑胶 hover=外滑入口（点击进入），播放键回归纯音乐 -->
+
+</aside>
+
+<!-- 窄屏页码点：第1页=唱机，第2页=本章详情（左右滑切换） -->
+<div class="dots" aria-hidden="true"><i></i><i></i></div>
+
+<!-- 窄屏专属入口：手机上黑胶/胶囊被隐藏，点此进入当前章节内页 -->
+<button class="m-enter" id="mEnter" type="button">进入本章 · <span id="mEnterLabel">个人信息</span><span class="arr">→</span></button>
+<div class="player" id="player">
+  <div class="np">
+    <div class="np-l">
+      <span class="np-track" id="npTrack">TRACK 01</span>
+      <b class="np-name" id="npName">个人信息</b>
+    </div>
+    <button class="np-enter" id="npEnter" type="button">查看本章 →</button>
+  </div>
+  <div class="deckrow">
+    <div class="progress">
+      <span class="t" id="tCur">00:00</span>
+      <input type="range" id="seek" min="0" max="1000" value="0" step="1" aria-label="播放进度">
+      <span class="t" id="tTot">00:00</span>
+    </div>
+    <div class="ctrl">
+      <button id="btnMute" type="button" aria-label="静音"><svg viewBox="0 0 24 24"><path id="volIcon" d="M3 9v6h4l5 5V4L7 9H3zm13.6 3a4.6 4.6 0 0 0-2.6-4.15v8.3A4.6 4.6 0 0 0 16.6 12zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg></button>
+      <button id="btnPrev" type="button" aria-label="上一章"><svg viewBox="0 0 24 24"><path d="M6 6h2.5v12H6zm3.8 6L19 18.5v-13z"/></svg></button>
+      <button id="btnPlay" type="button" aria-label="播放"><svg viewBox="0 0 24 24"><path id="playIcon" d="M8 5v14l11-7z"/></svg></button>
+      <button id="btnNext" type="button" aria-label="下一章"><svg viewBox="0 0 24 24"><path d="M15.5 6H18v12h-2.5zM5 18.5 13.8 12 5 5.5z"/></svg></button>
+      <button id="btnList" type="button" aria-label="章节列表"><svg viewBox="0 0 24 24"><path d="M4 6h13v2H4zm0 5h13v2H4zm0 5h13v2H4zM19 6h2v2h-2zm0 5h2v2h-2zm0 5h2v2h-2z"/></svg></button>
+    </div>
+    <p class="enterHint">PLAY · 播放音乐&nbsp;&nbsp;▸&nbsp;&nbsp;点右侧黑胶唱片，进入「<span id="enterLabel">个人信息</span>」</p>
+  </div>
+</div>
+
+<!-- 唱臂：3D 模型（tonearm-new.glb） -->
+<canvas id="arm3d" aria-hidden="true"></canvas>
+
+<!-- 归档视图（简历正文，结构与正文内容源自 resume.html v87） -->
+<button class="arch-back" id="archBack" type="button">← 返回唱机</button>
+<div class="archive" id="archive"></div>
+
+<div class="toast" id="toast"></div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "./js/three/three.module.js",
+    "three/addons/": "./js/three/addons/"
+  }
+}
+</script>
+<script type="module" src="js/arm3d.js?v=79"></script>
+<script src="resume-md.js?v=55"></script><script src="resume-v2.js?v=81"></script>
+</body>
+</html>

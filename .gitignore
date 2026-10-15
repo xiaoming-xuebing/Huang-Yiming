@@ -1,0 +1,14 @@
+# 开发预览文件（不上线）
+_preview_mobile.html
+启动预览服务.bat
+
+# 系统/编辑器
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+
+# 备份与临时文件
+backup*/
+*.bak
+*.tmp
