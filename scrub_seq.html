@@ -48,23 +48,7 @@
     -webkit-mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, #000 78%, transparent 100%);
     mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, #000 78%, transparent 100%); }
 
-  /* ---------- 顶栏 / 文案 / 进度轨 (点击后随世界一起淡出) ---------- */
-  nav { position:fixed; top:0; left:0; right:0; z-index:10;
-    display:flex; justify-content:space-between; align-items:center;
-    padding:max(18px, env(safe-area-inset-top,0px)) max(24px, env(safe-area-inset-right,0px))
-            18px max(24px, env(safe-area-inset-left,0px)); }
-  .logo { display:flex; align-items:baseline; gap:10px; }
-  .logo b { font-family:var(--font-heading); font-weight:500;
-    font-size:clamp(17px,2.2vw,24px); letter-spacing:-0.02em; }
-  .logo span { font-size:clamp(19px,2.4vw,27px); user-select:none; }
-  nav .who { font-size:clamp(13px,1.6vw,17px); letter-spacing:.28em; opacity:.85; }
-
-  #hero { position:fixed; left:24px; bottom:max(30px, calc(env(safe-area-inset-bottom,0px) + 12px)); z-index:5; pointer-events:none; }
-  #hero .kicker { font-size:clamp(12px,1.5vw,15px); letter-spacing:.34em; opacity:.65; margin-bottom:8px; }
-  #hero h1 { font-family:var(--font-heading); font-weight:500;
-    font-size:clamp(24px,4.2vw,48px); line-height:1.04; letter-spacing:-0.01em; }
-  #hero h1 small { display:block; font-size:.42em; letter-spacing:.3em; opacity:.75; margin-top:10px; }
-
+  /* ---------- 进度轨 (点击后随世界一起淡出) ---------- */
   #rail { position:fixed; left:50%; bottom:max(34px, calc(env(safe-area-inset-bottom,0px) + 16px));
     transform:translateX(-50%);
     z-index:10; width:min(440px,58vw); pointer-events:none; }
@@ -77,12 +61,6 @@
   #labels { display:flex; justify-content:space-between; margin-top:12px;
     font-size:11px; letter-spacing:.24em; opacity:.6; }
   #labels i { font-style:normal; }
-
-  #hint { position:fixed; left:50%; bottom:92px; transform:translateX(-50%); z-index:10;
-    font-size:clamp(13px,1.7vw,16px); letter-spacing:.18em; opacity:.78;
-    pointer-events:none; transition:opacity .8s ease; white-space:nowrap; }
-  #hint.gone { opacity:0; }
-  #hint .arr { opacity:.55; margin:0 .6em; }
 
   /* 点击提示: 右下角常显, 带脉冲 */
   #flipHint { position:fixed; right:max(24px, env(safe-area-inset-right,0px));
@@ -97,8 +75,8 @@
   @keyframes pulse { 50% { opacity:.55; } }
 
   /* UI 整体淡出: 触发过渡时 */
-  nav, #hero, #rail, #hint, #pagevig, #flipHint { transition:opacity .55s ease; }
-  body.flip nav, body.flip #hero, body.flip #rail, body.flip #hint, body.flip #pagevig, body.flip #flipHint {
+  #rail, #pagevig, #flipHint { transition:opacity .55s ease; }
+  body.flip #rail, body.flip #pagevig, body.flip #flipHint {
     opacity:0 !important; pointer-events:none; }
 
   /* ═════ B 面 · 星野 (圆形放大揭示 = resume 语言) ═════ */
@@ -161,12 +139,8 @@
     background-size:140px 140px; }
 
   @media (max-width:640px){
-    nav .who { display:none; }
-    /* 竖屏: 标题移到顶部补空白, 底部只留 提示+进度轨 */
-    #hero { left:18px; right:18px; top:max(58px, calc(env(safe-area-inset-top,0px) + 50px)); bottom:auto; }
     /* 进度轨贴到画布（小猫）正下方：画布底 = 50% + min(30vh,47vw)，与 JS 公式同步 */
     #rail { bottom:auto; top:calc(50% + min(30vh,47vw) + 12px); width:min(440px,76vw); }
-    #hint { bottom:max(64px, calc(env(safe-area-inset-bottom,0px) + 44px)); }
     /* B面: 杂志封面式——标题块压顶（锚在品牌行下），银河占中，入口收底，三段撑满竖屏 */
     .bMeta { top:max(30px, calc(env(safe-area-inset-top,0px) + 16px));
       font-size:10.5px; color:rgba(208,228,246,.8); }
@@ -181,7 +155,6 @@
     /* 跳转保持右下角点击（尺寸放大过的版本） */
     #flipHint{font-size:15px;letter-spacing:.32em;right:max(18px, env(safe-area-inset-right,0px))}
     #flipHint .farr{width:32px;height:32px}
-    #hint{bottom:max(64px, calc(env(safe-area-inset-bottom,0px) + 44px))}
     .bEnter { bottom:max(20px, calc(env(safe-area-inset-bottom,0px) + 14px)); }
     #goResume .arr { width:50px; height:50px; }
     #reFlip { left:6vw; bottom:max(16px, calc(env(safe-area-inset-bottom,0px) + 10px)); }
@@ -194,8 +167,6 @@
     .bRule { margin:12px 0 8px auto; }
     .bEnter { bottom:max(10px, calc(env(safe-area-inset-bottom,0px) + 6px)); }
     #reFlip { bottom:max(12px, calc(env(safe-area-inset-bottom,0px) + 8px)); }
-    #hero { top:auto; bottom:max(20px, calc(env(safe-area-inset-bottom,0px) + 8px)); }
-    #hint { display:none; }
   }
 </style>
 </head>
@@ -205,18 +176,6 @@
   <div id="world">
     <div id="stage"><canvas id="cv" width="674" height="548"></canvas></div>
     <div id="pagevig"></div>
-
-    <nav>
-      <div class="logo"><b>MY PERSONAL SPACE</b><span>✳︎</span></div>
-      <div class="who">HUANG YIMING</div>
-    </nav>
-
-    <div id="hero">
-      <div class="kicker">RECORD · CAT · COSMOS</div>
-      <h1>MY PERSONAL<br>SPACE<small>MOVE MOUSE TO PLAY</small></h1>
-    </div>
-
-    <div id="hint">LEFT<span class="arr">←</span>REACH · PUSH · LISTEN<span class="arr">→</span>RIGHT</div>
 
     <div id="rail">
       <div id="track"><div id="dot"></div></div>
@@ -245,7 +204,7 @@
       <div class="bSub">HUANG YIMING — PERSONAL PORTFOLIO</div>
     </div>
     <div class="bEnter">
-      <a id="goResume" href="resume-v2.html?v=m27">
+      <a id="goResume" href="resume-v2.html?v=m28">
         <span class="gt">CLICK TO ENTER</span>
         <svg class="arr" viewBox="0 0 64 64"><path fill-rule="evenodd" d="M14 0 H50 Q64 0 64 14 V50 Q64 64 50 64 H14 Q0 64 0 50 V14 Q0 0 14 0 Z M17.5 26.4 L17.5 22.2 Q17.5 20.4 19.3 20.4 L41.8 20.4 Q43.6 20.4 43.6 22.2 L43.6 44.7 Q43.6 46.5 41.8 46.5 L37.6 46.5 Q37.6 46.5 37.6 46.5 L37.6 30.9 L24.6 43.9 Q23.3 45.2 22 43.9 L20.1 42 Q18.8 40.7 20.1 39.4 L33.1 26.4 L17.5 26.4 Z"/></svg>
       </a>
@@ -263,19 +222,9 @@
   const stage = document.getElementById('stage');
   const track = document.getElementById('track');
   const dot = document.getElementById('dot');
-  const hint = document.getElementById('hint');
 
   /* 触屏设备: 文案与提示改为触摸语言 */
   const COARSE = matchMedia('(pointer: coarse)').matches;
-  const PLAY_TIP = COARSE ? 'TOUCH TO PLAY' : 'MOVE MOUSE TO PLAY';
-  const IDLE_HINT = COARSE
-    ? 'SWIPE<span class="arr">←</span>REACH · PUSH · LISTEN<span class="arr">→</span>RIGHT'
-    : 'LEFT<span class="arr">←</span>REACH · PUSH · LISTEN<span class="arr">→</span>RIGHT';
-  if (COARSE){
-    const sm = document.querySelector('#hero h1 small');
-    if (sm) sm.textContent = 'TOUCH TO PLAY';
-    hint.innerHTML = IDLE_HINT;
-  }
 
   // 中间刻度
   const tick = document.createElement('div');
@@ -294,13 +243,12 @@
   }
 
   const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
-  let target = 0, cur = 0, manual = false, hintGone = false, flipped = false;
+  let target = 0, cur = 0, manual = false, flipped = false;
 
   function setFromX(x){ target = clamp(x / window.innerWidth, 0, 1); }
   window.addEventListener('mousemove', e=>{
     if (flipped) return;
     manual = true;
-    if(!hintGone){ hintGone=true; hint.classList.add('gone'); }
     setFromX(e.clientX);
   });
   /* 触屏手势互斥规则：
@@ -309,7 +257,6 @@
      只要本次触摸累计位移 ≥14px，抬手绝不翻面 —— 两个手势不打架 */
   let downX = 0, downY = 0, downT = 0, tMove = 0;
   window.addEventListener('touchstart', e=>{
-    if(flipped) return;
     manual = true;
     const t = e.touches[0];
     downX = t.clientX; downY = t.clientY; downT = performance.now(); tMove = 0;
@@ -320,14 +267,20 @@
     const dx = t.clientX - downX, dy = t.clientY - downY;
     tMove = Math.max(tMove, Math.hypot(dx, dy));
     if(Math.abs(dx) > Math.abs(dy)){
-      if(!hintGone){ hintGone = true; hint.classList.add('gone'); }
       setFromX(t.clientX);
     }
   }, {passive:true});
   window.addEventListener('touchend', e=>{
-    if(flipped) return;
     const t = e.changedTouches[0];
-    const still = Math.hypot(t.clientX - downX, t.clientY - downY) < 10;
+    const dx = t.clientX - downX, dy = t.clientY - downY;
+    /* B 面（翻面后）左滑返回 A 面：与进入（点按/右滑翻面）对称 */
+    if(flipped){
+      if(dx < -60 && Math.abs(dx) > Math.abs(dy)*1.5 && performance.now() - downT < 700){
+        goBack();
+      }
+      return;
+    }
+    const still = Math.hypot(dx, dy) < 10;
     if(still && tMove < 14 && performance.now() - downT < 400) startFlip();
   }, {passive:true});
 
@@ -630,14 +583,15 @@
       setTimeout(() => { galMoveStart = performance.now(); }, 1900);   // 长成后迁往构图位
     }, 2600);
   }
-  document.getElementById('reFlip').addEventListener('click', () => {
+  function goBack(){
     document.body.classList.remove('flip','deep','phase2');
     world.style.clipPath = ''; deep.style.clipPath = '';
     cv.style.webkitMaskImage = ''; cv.style.maskImage = '';
     layout();
     galStart = 0; galK = 0; galMoveStart = 0;
     flipped = false; manual = false;
-  });
+  }
+  document.getElementById('reFlip').addEventListener('click', goBack);
 
   // ---------- 鼠标点击 = 按下/抬起位移很小 (触屏规则见上方手势互斥块) ----------
   addEventListener('mousedown', e => { downX = e.clientX; downY = e.clientY; downT = performance.now(); });
@@ -666,13 +620,6 @@
       dot.style.left = (cur*100).toFixed(2) + '%';
     }
 
-    if (!firstFrameDrawn){
-      hint.innerHTML = 'LOADING ' + Math.round(loaded/N*100) + '%';
-    } else if (loaded < N && !hintGone && hint.innerHTML.indexOf('LOADING') === 0){
-      hint.innerHTML = 'LOADING ' + Math.round(loaded/N*100) + '% · ' + PLAY_TIP;
-    } else if (loaded >= N && !hint.classList.contains('gone') && hint.innerHTML.indexOf('LOADING') === 0){
-      hint.innerHTML = IDLE_HINT;
-    }
     requestAnimationFrame(render);
   }
 

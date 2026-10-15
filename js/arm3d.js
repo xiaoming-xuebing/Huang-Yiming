@@ -195,6 +195,14 @@ window.__arm3dReload = () => {
   window.__arm3dFailed = false;
   loadArm(8, 0);
 };
+/* 延迟加载 14MB 模型：等首屏（封面/漩涡/文字）先出来再拉模型，
+   避免大文件与雪碧图/字体抢带宽，缩短「页面能看」的时间。
+   页面 load 后立刻加载（不额外空等），仅延后到关键资源之后。 */
+function kickArmLoad(){
+  if (document.readyState === 'complete') { loadArm(); }
+  else { window.addEventListener('load', () => loadArm(), { once:true }); }
+}
+kickArmLoad();
 function setupModel(gltf) {
   // 支持多网格模型：把所有子 mesh 收集到 modelG
   const meshes = [];
@@ -266,7 +274,6 @@ function setupModel(gltf) {
   window.__arm3dDbg = { root, alignG, spinG, cueG, modelG, group, shadow, glow, starGroup, star, camera, renderer, get S() { return curScale; } };
   window.dispatchEvent(new Event('arm3dready'));
 }
-loadArm();
 
 /* ---- 每帧 ---- */
 let lastW = 0, lastH = 0, curScale = 1;

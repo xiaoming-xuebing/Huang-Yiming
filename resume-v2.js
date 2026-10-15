@@ -15,22 +15,22 @@ document.body.dataset.motion=(new URLSearchParams(location.search).get('motion')
    aurora = 对应 NYNA 色卡的五个色值，顺序固定为：
             [主色, 亮心, 暗部, 辉光次色, 暗部→主色的过渡色(两卡色相混)] ── */
 const CHAPTERS=[
-{id:'hero',       track:'TRACK 01', label:'个人信息', sub:'Profile', note:'WHO I AM · 初见',    color:'#2E5FD0', cover:'assets/covers/track-06.png', audio:'audio/track01.mp3', big:['PRO','FILE'], bigPos:['p0','p4'],
+{id:'hero',       track:'TRACK 01', label:'个人信息', sub:'Profile', note:'WHO I AM · 初见',    color:'#2E5FD0', cover:'assets/covers/track-06.jpg', audio:'audio/track01.mp3', big:['PRO','FILE'], bigPos:['p0','p4'],
    /* 参考图B：宝蓝 × 橙（宝蓝主色/淡天蓝高光/深蓝暗部/炽橙辉光/亮蓝过渡）——与个人技能对换 */
    aurora:['#1E46B4','#C8E4F8','#0A1C74','#E07426','#2A5CC8']},
-{id:'experience', track:'TRACK 02', label:'实习经历', sub:'Internship', note:'IN ACTION · 实战', color:'#DC5424', cover:'assets/covers/track-04.png', audio:'audio/track04.mp3', big:['INT','ERN','SHIP'],
+{id:'experience', track:'TRACK 02', label:'实习经历', sub:'Internship', note:'IN ACTION · 实战', color:'#DC5424', cover:'assets/covers/track-04.jpg', audio:'audio/track04.mp3', big:['INT','ERN','SHIP'],
    /* 参考图A：炽橙 × 墨青（橙红主色/桃色高光/墨青暗部/亮橙辉光/焦橙过渡） */
    aurora:['#DC5424','#F4BE8E','#132A32','#E88A3A','#7E2E1E']},
-{id:'featureRail',track:'TRACK 03',  label:'项目细节', sub:'Project', note:'BEHIND · 幕后',    color:'#5054A8', cover:'assets/covers/track-03.png', audio:'audio/track06.mp3', big:['PRO','JECT'], bigPos:['p0','p4'],
+{id:'featureRail',track:'TRACK 03',  label:'项目细节', sub:'Project', note:'BEHIND · 幕后',    color:'#5054A8', cover:'assets/covers/track-03.jpg', audio:'audio/track06.mp3', big:['PRO','JECT'], bigPos:['p0','p4'],
    /* Card3 BrightFern/DarkAmethyst/OceanTwilight/Thistle/PastelPetal */
    aurora:['#5054A8','#F0C9FA','#350943','#529F0F','#432F75']},
 {id:'education',  track:'TRACK 04', label:'AI 碎片', sub:'Fragments', note:'SPARK · 碎片',  color:'#F2A4D8', cover:'assets/covers/education-yozakura.jpg', audio:'audio/track03.mp3', big:['AI','FRA','GMENTS'],
    /* Card5 SoftBlush/BlushPop/Thistle/PacificCyan/SeaGreen；专辑图=YOZAKURA 夜樱封面 */
    aurora:['#F2A4D8','#FFE9E9','#008748','#3098A4','#799690']},
-{id:'advantages', track:'TRACK 05', label:'个人优势', sub:'Advantages', note:'WHY ME · 亮点', color:'#25C5E9', cover:'assets/covers/track-05.png', audio:'audio/track02.mp3', big:['ADV','ANT','AGES'],
+{id:'advantages', track:'TRACK 05', label:'个人优势', sub:'Advantages', note:'WHY ME · 亮点', color:'#25C5E9', cover:'assets/covers/track-05.jpg', audio:'audio/track02.mp3', big:['ADV','ANT','AGES'],
    /* Card2 MintCream/TeaGreen/SkyAqua/DarkCyan/InkBlack；封面沿用原教育背景封面图 */
    aurora:['#25C5E9','#F2FFF6','#021225','#CAFFDE','#238689']},
-{id:'skills',     track:'TRACK 06', label:'个人技能', sub:'Skills', note:'TOOLBOX · 武器库',     color:'#3E4B8E', cover:'assets/covers/track-01.png', audio:'audio/track05.mp3', big:['SKI','LLS'], bigPos:['p0','p4'],
+{id:'skills',     track:'TRACK 06', label:'个人技能', sub:'Skills', note:'TOOLBOX · 武器库',     color:'#3E4B8E', cover:'assets/covers/track-01.jpg', audio:'audio/track05.mp3', big:['SKI','LLS'], bigPos:['p0','p4'],
    /* Card1 Seashell/Wheat/PowderBlue/FrenchBlue/MidnightViolet——与个人信息对换 */
    aurora:['#3E4B8E','#FFF4EB','#3D1534','#F6E0B6','#3E3061']},
 ];
@@ -42,7 +42,7 @@ const cv=$('cosmos'), ctx=cv.getContext('2d');
 let W=0,H=0,dpr=Math.min(devicePixelRatio||1,2);
 let cx=0,cy=0,rx=0,ry=0;
 const TILT=1.0, ROT=0.7;   /* 顶视正圆（与 intro 终态 tiltK=1 一致） */
-const RING_COUNT=100;      /* 密环（参考亮蓝同心光环） */
+let RING_COUNT=100;        /* 密环（参考亮蓝同心光环）；窄屏降密度，避免手机端漩涡过密 */
 const rMap=t=>0.24+Math.pow(t,0.8)*0.72;   /* 甜甜圈：内圈从 0.24R 起，中心留黑洞 */
 let parts=[], starParts=[];
 
@@ -71,10 +71,15 @@ function layout(){
 }
 function buildField(){
   parts=[];
+  /* 窄屏降密度：手机屏幕小、漩涡视觉半径大，同样粒子数显得挤成一团。
+     环数降到 ~66%，每环粒子降到 ~78%，总粒子约一半，沟槽间距拉开更透气 */
+  const narrow=W<900;
+  RING_COUNT=narrow?66:100;
+  const perMul=narrow?0.78:1;
   for(let ring=0;ring<RING_COUNT;ring++){
     const t=ring/RING_COUNT;
     const rBase=rMap(t);
-    const perRing=Math.round(7+(1-t)*13);
+    const perRing=Math.round((7+(1-t)*13)*perMul);
     for(let i=0;i<perRing;i++){
       const rnd=Math.random();
       parts.push({
@@ -90,7 +95,8 @@ function buildField(){
     }
   }
   starParts=[];
-  for(let i=0;i<160;i++){
+  const starN=narrow?100:160;
+  for(let i=0;i<starN;i++){
     starParts.push({x:Math.random(),y:Math.random(),s:Math.random()*1.1+0.2,tw:Math.random()*Math.PI*2,tws:0.5+Math.random()*1.5});
   }
 }
@@ -554,11 +560,19 @@ function loadTrack(autoplay){
   audio.src=ch.audio;
   if(autoplay){
     playingIntent=true;
+    /* 切 src 后立刻 play() 可能因数据未就绪被浏览器拦截（返回 rejected promise）。
+       先 load() 确保流就绪，再 play()；失败静默重试一次，仍失败才提示。 */
+    audio.load();
     const pr=audio.play();
-    if(pr&&pr.catch) pr.catch(()=>{ showToast('浏览器拦截了自动播放，请点击卡片播放键'); });
+    if(pr&&pr.catch) pr.catch(()=>{
+      audio.addEventListener('loadeddata', function retry(){ audio.play().catch(()=>{ showToast('浏览器拦截了自动播放，请点击播放键'); }); audio.removeEventListener('loadeddata', retry); }, {once:true});
+    });
   }
 }
-function stepTo(d,auto){ setChapter((cur+d+N)%N,{autoplay:playingIntent||!!auto}); }
+function stepTo(d,force){ /* force=true：强制续播（歌曲自然播完自动切下一首）；否则跟随当前播放状态 */
+  const auto = force ? true : !audio.paused;
+  setChapter((cur+d+N)%N,{autoplay:auto});
+}
 
 /* ═══════════ 章节切换 ═══════════ */
 const discWrap=$('discWrap'), discImg=$('discImg');
@@ -697,12 +711,19 @@ function deckHide(){ if(deckLock) return; clearTimeout(deckTimer); deckTimer=set
   const elSeek=$('seek'), elList=$('btnList'), elEnter=$('btnEnter');
   function togglePlay(){
     if(!audio.src) loadTrack(true);
-    else if(audio.paused){ playingIntent=true; const pr=audio.play(); if(pr&&pr.catch) pr.catch(()=>{}); }  /* v71：播放键回归纯音乐，进入走黑胶入口 */
+    else if(audio.paused){
+      playingIntent=true;
+      /* 数据未就绪时 play() 会被拦截；等 loadeddata 再试一次，避免点播放键无反应 */
+      const pr=audio.play();
+      if(pr&&pr.catch) pr.catch(()=>{
+        if(audio.readyState<3) audio.addEventListener('loadeddata', function retry(){ audio.play().catch(()=>{}); audio.removeEventListener('loadeddata', retry); }, {once:true});
+      });
+    }
     else { playingIntent=false; audio.pause(); }
   }
   if(elPlay) elPlay.addEventListener('click',togglePlay);
-  if(elPrev) elPrev.addEventListener('click',()=>stepTo(-1,true));
-  if(elNext) elNext.addEventListener('click',()=>stepTo(1,true));
+  if(elPrev) elPrev.addEventListener('click',()=>stepTo(-1));
+  if(elNext) elNext.addEventListener('click',()=>stepTo(1));
   if(elMute) elMute.addEventListener('click',()=>{
     audio.muted=!audio.muted;
     const p=$('volIcon'); if(p) p.setAttribute('d',audio.muted?ICON_MUTE:ICON_VOL);
@@ -898,7 +919,7 @@ function mdViewer(key){
 }
 /* AI 视频位：文件未就位时自动降级为占位卡；视频放到 assets/aivideos/ 即自动显示 */
 window.vidPh=function(v){var d=document.createElement('div');d.className='a-vidph';d.textContent='待放置 · '+(v.dataset.cap||'AI 视频');v.replaceWith(d);};
-function aiVideo(src,cap){return '<div class="a-figure"><video controls preload="metadata" src="'+src+'" data-cap="'+cap+'" onerror="vidPh(this)"></video><p class="a-cap">'+cap+'</p></div>';}
+function aiVideo(src,cap){return '<div class="a-figure"><video class="a-video" controls preload="metadata" src="'+src+'" data-cap="'+cap+'" onerror="vidPh(this)"></video><p class="a-cap">'+cap+'</p></div>';}
 const ARCH={
 hero:'<section class="arch-sec" id="a-hero">'+
   '<p class="arch-no">Track 01 · Profile</p><h2 class="arch-title">黄奕铭</h2><p class="arch-sub">Huang Yiming · AI 产品经理实习生</p><div class="arch-rule"></div>'+
@@ -1039,6 +1060,28 @@ function renderArch(){
   $('archDisc').style.backgroundImage="url('"+ch.cover+"')";
   archBgFor(ch);
   archive.scrollTop=0;
+  bindArchVideos();
+}
+/* AI 视频 ↔ 背景音乐联动：只有视频开始播放才暂停音乐；
+   视频暂停/结束/退出详情页时恢复音乐（若原本就在播）。
+   其余操作（切章节、播放键等）不影响这一联动，音乐逻辑各自独立。 */
+let _musicBeforeVideo=null;   /* 记录视频播放前音乐是否在播，用于视频结束后恢复 */
+function bindArchVideos(){
+  archive.querySelectorAll('video.a-video').forEach(v=>{
+    if(v._boundMusic) return; v._boundMusic=true;
+    v.addEventListener('play',()=>{
+      if(!audio.paused){ _musicBeforeVideo=true; audio.pause(); }
+      else _musicBeforeVideo=false;
+    });
+    v.addEventListener('pause',()=>{
+      if(_musicBeforeVideo && audio.paused){ audio.play().catch(()=>{}); }
+      _musicBeforeVideo=null;
+    });
+    v.addEventListener('ended',()=>{
+      if(_musicBeforeVideo && audio.paused){ audio.play().catch(()=>{}); }
+      _musicBeforeVideo=null;
+    });
+  });
 }
 function openArchive(){
   archive.classList.add('on'); archBack.classList.add('on');
@@ -1064,7 +1107,13 @@ addEventListener('keydown',e=>{
   if(e.code==='Space'){   /* v71：空格=纯播放/暂停；进入章节走黑胶入口或 E 键 */
     e.preventDefault();
     if(!audio.src) loadTrack(true);
-    else if(audio.paused){ playingIntent=true; const pr=audio.play(); if(pr&&pr.catch) pr.catch(()=>{}); }
+    else if(audio.paused){
+      playingIntent=true;
+      const pr=audio.play();
+      if(pr&&pr.catch) pr.catch(()=>{
+        if(audio.readyState<3) audio.addEventListener('loadeddata', function retry(){ audio.play().catch(()=>{}); audio.removeEventListener('loadeddata', retry); }, {once:true});
+      });
+    }
     else{ playingIntent=false; audio.pause(); }
   }
   else if(e.key==='ArrowLeft') stepTo(-1);

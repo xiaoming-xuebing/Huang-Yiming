@@ -710,7 +710,8 @@ body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
   .strip-deck{inset:auto;left:0;right:0;top:auto;bottom:calc(3.2vh + 12px + env(safe-area-inset-bottom,0px));
     width:auto;height:auto;display:flex;flex-direction:row;gap:8px;overflow-x:auto;
     padding:4px 3.5%;scrollbar-width:none;scroll-snap-type:x proximity;
-    -webkit-overflow-scrolling:touch;transform:none}
+    -webkit-overflow-scrolling:touch;transform:none;
+    pointer-events:auto;touch-action:pan-x}
   .strip-deck::-webkit-scrollbar{display:none}
   .strip{position:static;flex:0 0 auto;width:148px!important;height:64px!important;transform:none!important;scroll-snap-align:center}
   .strip-deck.shut{opacity:1;transform:none;visibility:visible;transition:none}
@@ -899,7 +900,7 @@ body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
   }
 }
 </script>
-<script type="module" src="js/arm3d.js?v=79"></script>
-<script src="resume-md.js?v=55"></script><script src="resume-v2.js?v=81"></script>
+<script type="module" src="js/arm3d.js?v=80"></script>
+<script src="resume-md.js?v=55"></script><script src="resume-v2.js?v=82"></script>
 </body>
 </html>
