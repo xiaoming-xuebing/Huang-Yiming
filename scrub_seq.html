@@ -358,24 +358,28 @@
   function buildGalaxy(){
     parts = [];
     /* 手机端降密度: 屏幕小、银河视觉半径大, 同样粒子数会挤成一团。
-       环数 90→54, 每环粒子 ×0.58, 星点 160→96, 粒子尺寸略收 —— 总粒子约降到桌面 1/3, 环间距拉开更透气 */
+       环数 90→54, 星点 160→96, 粒子尺寸略收 —— 总粒子约降到桌面一半。
+       关键: 窄屏粒子沿环均匀分布 + 拉长拖尾, 让环连续不断(避免随机角度产生的空档断环) */
     const narrow = COARSE || Math.min(innerWidth, innerHeight) < 700;
     GAL_RINGS = narrow ? 54 : 90;
-    const perMul = narrow ? 0.58 : 1;
-    const szMul = narrow ? 0.85 : 1;
     for (let ring = 0; ring < GAL_RINGS; ring++){
       const t = ring / GAL_RINGS;
       // 全盘填充: 从中心星体外缘(0.12)一直铺到盘缘, 参考图密集沟槽质感
       const rBase = 0.12 + Math.pow(t, 0.8) * 0.86;
-      const perRing = Math.max(4, Math.round((9 + (1 - t) * 20) * perMul));
+      /* 窄屏: 外圈粒子不能太少(否则角间距大、环断), 用 12~18 的等弧长分布 */
+      const perRing = narrow ? Math.round(12 + (1 - t) * 6) : Math.round(9 + (1 - t) * 20);
       for (let i = 0; i < perRing; i++){
         const rnd = Math.random();
+        /* 窄屏: 角度均匀分布(等角间距) + 轻微抖动, 环连续; 桌面保持随机 */
+        const aBase = narrow ? (i / perRing) * Math.PI * 2 : Math.random() * Math.PI * 2;
+        const a = aBase + (Math.random() - 0.5) * (narrow ? 0.22 : 0);
         parts.push({
-          a: Math.random() * Math.PI * 2,
+          a: a,
           r: rBase + (Math.random() - 0.5) * 0.006,
           sp: 0.55 + (1.02 - rBase) * 0.85 + (Math.random() - 0.5) * 0.06,
-          sz: (1.1 + Math.random() * 1.8) * szMul,
-          streak: 0.10 + Math.random() * 0.30,
+          sz: (1.1 + Math.random() * 1.8) * (narrow ? 0.85 : 1),
+          /* 窄屏: 拖尾拉长, 覆盖相邻粒子间隙, 环读作连续弧线而非散点 */
+          streak: narrow ? 0.22 + Math.random() * 0.28 : 0.10 + Math.random() * 0.30,
           // 参考图色卡: 冰蓝青 55% / 高光白 20% / 深蓝 25%
           tone: rnd < 0.55 ? 'ice' : (rnd < 0.75 ? 'white' : 'deep'),
           thick: 0.5 + Math.random() * 0.4,
