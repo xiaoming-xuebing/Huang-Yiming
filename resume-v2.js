@@ -42,7 +42,7 @@ const cv=$('cosmos'), ctx=cv.getContext('2d');
 let W=0,H=0,dpr=Math.min(devicePixelRatio||1,2);
 let cx=0,cy=0,rx=0,ry=0;
 const TILT=1.0, ROT=0.7;   /* 顶视正圆（与 intro 终态 tiltK=1 一致） */
-let RING_COUNT=100;        /* 密环（参考亮蓝同心光环）；窄屏降密度，避免手机端漩涡过密 */
+const RING_COUNT=100;      /* 密环（参考亮蓝同心光环） */
 const rMap=t=>0.24+Math.pow(t,0.8)*0.72;   /* 甜甜圈：内圈从 0.24R 起，中心留黑洞 */
 let parts=[], starParts=[];
 
@@ -71,15 +71,10 @@ function layout(){
 }
 function buildField(){
   parts=[];
-  /* 窄屏降密度：手机屏幕小、漩涡视觉半径大，同样粒子数显得挤成一团。
-     环数降到 ~66%，每环粒子降到 ~78%，总粒子约一半，沟槽间距拉开更透气 */
-  const narrow=W<900;
-  RING_COUNT=narrow?66:100;
-  const perMul=narrow?0.78:1;
   for(let ring=0;ring<RING_COUNT;ring++){
     const t=ring/RING_COUNT;
     const rBase=rMap(t);
-    const perRing=Math.round((7+(1-t)*13)*perMul);
+    const perRing=Math.round(7+(1-t)*13);
     for(let i=0;i<perRing;i++){
       const rnd=Math.random();
       parts.push({
@@ -95,8 +90,7 @@ function buildField(){
     }
   }
   starParts=[];
-  const starN=narrow?100:160;
-  for(let i=0;i<starN;i++){
+  for(let i=0;i<160;i++){
     starParts.push({x:Math.random(),y:Math.random(),s:Math.random()*1.1+0.2,tw:Math.random()*Math.PI*2,tws:0.5+Math.random()*1.5});
   }
 }
