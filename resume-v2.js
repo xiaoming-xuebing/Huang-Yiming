@@ -998,8 +998,8 @@ featureRail:'<section class="arch-sec" id="a-featureRail">'+
   mdViewer('foodvert')+'</div></section>',
 experience:'<section class="arch-sec" id="a-experience">'+
   '<p class="arch-no">Track 04 · Movement II</p><h2 class="arch-title">实习经历</h2><p class="arch-sub">Experience · Internship</p><div class="arch-rule"></div>'+
-  '<div class="a-card"><span class="a-badge">AI 产品经理实习生 · 2025.03 — 2025.07</span><h3 class="a-h3">云雅科技 · 基于 Multi-Agent 的电商智能选品项目</h3>'+
-  '<p style="margin-bottom:14px">参与云雅科技 AI 智能选品产品设计工作，构建<b>「Multi-Agent」</b>的智能选品体系，解决传统选品时效低、数据海量难处理的难题，实现商家选品降本增效提升。</p><ul>'+
+  '<div class="a-card"><span class="a-badge">AI 产品经理实习生 · 2025.03 — 2025.07</span><h3 class="a-h3">虾皮 Shopee · 基于 Multi-Agent 的电商智能选品项目</h3>'+
+  '<p style="margin-bottom:14px">参与虾皮 Shopee AI 智能选品产品设计工作，构建<b>「Multi-Agent」</b>的智能选品体系，解决传统选品时效低、数据海量难处理的难题，实现商家选品降本增效提升。</p><ul>'+
   '<li><p><b>业务调研</b>：深入调研遨虾、LinkFox、Eco Tik 等竞品智能选品的产品方案和技术路线，生成调研报告；结合自身业务场景需求，提出<b>「Multi-Agent」</b>的智能选品产品方案设计。</p></li>'+
   '<li><p><b>智能选品 Agent 设计</b>：根据<b>「专业选品师选品经验」</b>结合<b>「Multi-Agent」</b>技术设计涵盖<b>澄清、规划、研究、报告四个 Agent</b> 的多智能体架构。设计<b>「输入—过程—输出」微观机制</b>——澄清侧通过<b>「需求 / 品类 / 市场 / 商家信息」</b>四维缺失识别 + 3 轮反问上限 + 默认选项卡片策略兜底，收敛模糊选品需求；能力侧将食品选品方法论<b>「宏观市场、微观商品、内因外因四维 + 食品垂直领域 6 大类目差异化选品规则与合规校验沉淀」</b>为策略型 Skill，与 websearch、SQL、RAG 等数据型 Skill 统一编排，定义触发条件、调用优先级与失败降级路径；输出侧设计选品报告大纲：以五模块<b>「市场概览、竞争格局、人群/属性筛选、推荐商品与理由、风险与运营 SOP」</b>，按意图 × 诉求衍生 10 套章节模板，再按 6 大食品类目增删挂载专属研判维度与合规校验。</p></li>'+
   '<li><p><b>Agent 评测</b>：主导智能选品 Agent 生成报告结果层可行性效果评测与优化工作，<b>从 0 构建 1 套完整的模型评价体系</b>，设计<b>「完整性、数据可信度、逻辑自洽、推荐质量、决策价值」5 维度 26 项指标</b>的评测体系，3 轮评测定位<b>落地执行策略不足、商品推荐不佳</b>两大核心痛点，针对性制定优化策略，采取大模型微调与 Prompt 工程优化，推动 Agent 迭代升级。</p></li>'+
