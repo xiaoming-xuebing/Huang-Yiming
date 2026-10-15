@@ -245,7 +245,7 @@
       <div class="bSub">HUANG YIMING — PERSONAL PORTFOLIO</div>
     </div>
     <div class="bEnter">
-      <a id="goResume" href="resume-v2.html?v=m25">
+      <a id="goResume" href="resume-v2.html?v=m27">
         <span class="gt">CLICK TO ENTER</span>
         <svg class="arr" viewBox="0 0 64 64"><path fill-rule="evenodd" d="M14 0 H50 Q64 0 64 14 V50 Q64 64 50 64 H14 Q0 64 0 50 V14 Q0 0 14 0 Z M17.5 26.4 L17.5 22.2 Q17.5 20.4 19.3 20.4 L41.8 20.4 Q43.6 20.4 43.6 22.2 L43.6 44.7 Q43.6 46.5 41.8 46.5 L37.6 46.5 Q37.6 46.5 37.6 46.5 L37.6 30.9 L24.6 43.9 Q23.3 45.2 22 43.9 L20.1 42 Q18.8 40.7 20.1 39.4 L33.1 26.4 L17.5 26.4 Z"/></svg>
       </a>
@@ -282,12 +282,16 @@
   tick.className = 'tick'; tick.style.left = '50%';
   track.appendChild(tick);
 
-  // ---------- 预加载雪碧图 (200 帧合并为 1 张 10x20 网格, 每格 337x274) ----------
-  const SPR_COLS = 10, SPR_ROWS = 20, SPR_FW = 337, SPR_FH = 274;
-  const sprite = new Image();
+  // ---------- 预加载雪碧图 (200 帧拆 5 张 5x8 网格, 每格 630x512, 单张 3150x4096 ≤ 手机 canvas 纹理上限) ----------
+  const SPR_COLS = 5, SPR_ROWS = 8, SPR_FW = 630, SPR_FH = 512, SPR_PER = SPR_COLS * SPR_ROWS;  // 每张 40 帧
+  const sprites = [];
   let loaded = 0, firstFrameDrawn = false;
-  sprite.src = 'assets/seq3_sprite.jpg';
-  sprite.onload = () => { loaded = N; };
+  for (let g = 0; g < 5; g++){
+    const im = new Image();
+    im.src = 'assets/seq3_s' + g + '.jpg';
+    im.onload = () => { loaded += SPR_PER; };
+    sprites.push(im);
+  }
 
   const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
   let target = 0, cur = 0, manual = false, hintGone = false, flipped = false;
@@ -645,9 +649,11 @@
   // ---------- 渲染: 从雪碧图切片取帧, 硬切零延迟 ----------
   let lastIdx = -1;
   function draw(idx){
-    if (sprite.complete && sprite.naturalWidth){
-      const col = idx % SPR_COLS, row = Math.floor(idx / SPR_COLS);
-      ctx.drawImage(sprite, col * SPR_FW, row * SPR_FH, SPR_FW, SPR_FH, 0, 0, cv.width, cv.height);
+    const g = Math.floor(idx / SPR_PER), i = idx % SPR_PER;
+    const spr = sprites[g];
+    if (spr && spr.complete && spr.naturalWidth){
+      const col = i % SPR_COLS, row = Math.floor(i / SPR_COLS);
+      ctx.drawImage(spr, col * SPR_FW, row * SPR_FH, SPR_FW, SPR_FH, 0, 0, cv.width, cv.height);
       firstFrameDrawn = true;
     }
   }
