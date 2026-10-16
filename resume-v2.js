@@ -15,22 +15,22 @@ document.body.dataset.motion=(new URLSearchParams(location.search).get('motion')
    aurora = 对应 NYNA 色卡的五个色值，顺序固定为：
             [主色, 亮心, 暗部, 辉光次色, 暗部→主色的过渡色(两卡色相混)] ── */
 const CHAPTERS=[
-{id:'hero',       track:'TRACK 01', label:'个人信息', sub:'Profile', note:'WHO I AM · 初见',    color:'#2E5FD0', cover:'assets/covers/track-06.jpg', audio:'audio/track01.mp3', big:['PRO','FILE'], bigPos:['p0','p4'],
+{id:'hero',       track:'TRACK 01', label:'个人信息', sub:'Profile', note:'WHO I AM · 初见',    color:'#2E5FD0', cover:'assets/covers/track-06.jpg', audio:'audio/track01.ogg', big:['PRO','FILE'], bigPos:['p0','p4'],
    /* 参考图B：宝蓝 × 橙（宝蓝主色/淡天蓝高光/深蓝暗部/炽橙辉光/亮蓝过渡）——与个人技能对换 */
    aurora:['#1E46B4','#C8E4F8','#0A1C74','#E07426','#2A5CC8']},
-{id:'experience', track:'TRACK 02', label:'实习经历', sub:'Internship', note:'IN ACTION · 实战', color:'#DC5424', cover:'assets/covers/track-04.jpg', audio:'audio/track04.mp3', big:['INT','ERN','SHIP'],
+{id:'experience', track:'TRACK 02', label:'实习经历', sub:'Internship', note:'IN ACTION · 实战', color:'#DC5424', cover:'assets/covers/track-04.jpg', audio:'audio/track04.ogg', big:['INT','ERN','SHIP'],
    /* 参考图A：炽橙 × 墨青（橙红主色/桃色高光/墨青暗部/亮橙辉光/焦橙过渡） */
    aurora:['#DC5424','#F4BE8E','#132A32','#E88A3A','#7E2E1E']},
-{id:'featureRail',track:'TRACK 03',  label:'项目细节', sub:'Project', note:'BEHIND · 幕后',    color:'#5054A8', cover:'assets/covers/track-03.jpg', audio:'audio/track06.mp3', big:['PRO','JECT'], bigPos:['p0','p4'],
+{id:'featureRail',track:'TRACK 03',  label:'项目细节', sub:'Project', note:'BEHIND · 幕后',    color:'#5054A8', cover:'assets/covers/track-03.jpg', audio:'audio/track06.ogg', big:['PRO','JECT'], bigPos:['p0','p4'],
    /* Card3 BrightFern/DarkAmethyst/OceanTwilight/Thistle/PastelPetal */
    aurora:['#5054A8','#F0C9FA','#350943','#529F0F','#432F75']},
-{id:'education',  track:'TRACK 04', label:'AI 碎片', sub:'Fragments', note:'SPARK · 碎片',  color:'#F2A4D8', cover:'assets/covers/education-yozakura.jpg', audio:'audio/track03.mp3', big:['AI','FRA','GMENTS'],
+{id:'education',  track:'TRACK 04', label:'AI 碎片', sub:'Fragments', note:'SPARK · 碎片',  color:'#F2A4D8', cover:'assets/covers/education-yozakura.jpg', audio:'audio/track03.ogg', big:['AI','FRA','GMENTS'],
    /* Card5 SoftBlush/BlushPop/Thistle/PacificCyan/SeaGreen；专辑图=YOZAKURA 夜樱封面 */
    aurora:['#F2A4D8','#FFE9E9','#008748','#3098A4','#799690']},
-{id:'advantages', track:'TRACK 05', label:'个人优势', sub:'Advantages', note:'WHY ME · 亮点', color:'#25C5E9', cover:'assets/covers/track-05.jpg', audio:'audio/track02.mp3', big:['ADV','ANT','AGES'],
+{id:'advantages', track:'TRACK 05', label:'个人优势', sub:'Advantages', note:'WHY ME · 亮点', color:'#25C5E9', cover:'assets/covers/track-05.jpg', audio:'audio/track02.ogg', big:['ADV','ANT','AGES'],
    /* Card2 MintCream/TeaGreen/SkyAqua/DarkCyan/InkBlack；封面沿用原教育背景封面图 */
    aurora:['#25C5E9','#F2FFF6','#021225','#CAFFDE','#238689']},
-{id:'skills',     track:'TRACK 06', label:'个人技能', sub:'Skills', note:'TOOLBOX · 武器库',     color:'#3E4B8E', cover:'assets/covers/track-01.jpg', audio:'audio/track05.mp3', big:['SKI','LLS'], bigPos:['p0','p4'],
+{id:'skills',     track:'TRACK 06', label:'个人技能', sub:'Skills', note:'TOOLBOX · 武器库',     color:'#3E4B8E', cover:'assets/covers/track-01.jpg', audio:'audio/track05.ogg', big:['SKI','LLS'], bigPos:['p0','p4'],
    /* Card1 Seashell/Wheat/PowderBlue/FrenchBlue/MidnightViolet——与个人信息对换 */
    aurora:['#3E4B8E','#FFF4EB','#3D1534','#F6E0B6','#3E3061']},
 ];
@@ -551,7 +551,8 @@ audio.addEventListener('error',()=>{
 });
 function loadTrack(autoplay){
   const ch=CHAPTERS[cur];
-  audio.src=ch.audio;
+  /* OGG 主格式（体积小 40%+）；旧版 Safari 不支持 Vorbis/OGG → 自动回退同曲 MP3 兜底 */
+  audio.src=(ch.audio.endsWith('.ogg')&&!(audio.canPlayType&&audio.canPlayType('audio/ogg; codecs="vorbis"')))?ch.audio.replace('.ogg','.mp3'):ch.audio;
   if(autoplay){
     playingIntent=true;
     /* 切 src 后立刻 play() 可能因数据未就绪被浏览器拦截（返回 rejected promise）。
