@@ -563,9 +563,8 @@ function loadTrack(autoplay){
     });
   }
 }
-function stepTo(d,force){ /* force=true：强制续播（歌曲自然播完自动切下一首）；否则跟随当前播放状态 */
-  const auto = force ? true : !audio.paused;
-  setChapter((cur+d+N)%N,{autoplay:auto});
+function stepTo(d,force){ /* 切章节即自动播放（符合听歌逻辑：切歌=开始放） */
+  setChapter((cur+d+N)%N,{autoplay:true});
 }
 
 /* ═══════════ 章节切换 ═══════════ */
@@ -1112,6 +1111,7 @@ function bindArchVideos(){
 }
 function openArchive(){
   archive.classList.add('on'); archBack.classList.add('on');
+  if(archNav) archNav.classList.add('on');
   document.body.classList.add('reading');           /* 淡出唱机前景，透出极光/星漩背景 */
   document.body.style.overflow='hidden';           /* 锁住底层滚动，避免滚动穿透 */
   renderArch();
@@ -1120,10 +1120,15 @@ function closeArchive(){
   /* v98：退出章节时暂停所有内页视频，避免后台继续播 */
   archive.querySelectorAll('video').forEach(v=>{ try{ v.pause(); }catch(_){}});
   archive.classList.remove('on'); archBack.classList.remove('on');
+  if(archNav) archNav.classList.remove('on');
   document.body.classList.remove('reading');
   document.body.style.overflow='';
 }
 archBack.addEventListener('click',closeArchive);
+/* 详情页内左右切换章节：切换即自动播放，详情页保持打开 */
+const archNav=$('archNav');
+if($('archPrev')) $('archPrev').addEventListener('click',()=>{ stepTo(-1); });
+if($('archNext')) $('archNext').addEventListener('click',()=>{ stepTo(1); });
 $('logoHome').addEventListener('click',e=>{ e.preventDefault(); closeArchive(); });
 dcLabel.parentElement.parentElement.addEventListener('dblclick',openArchive);
 

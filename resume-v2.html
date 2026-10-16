@@ -547,12 +547,25 @@ body.reading #cosmos,body.reading #vignette{opacity:0}   /* 星漩/暗角不进�
 body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
 .arch-back{
   position:fixed;top:24px;left:34px;z-index:50;
-  background:rgba(9,13,22,.6);border:1px solid var(--hair);border-radius:20px;
-  color:var(--txt-dim);font-size:11px;letter-spacing:.22em;padding:9px 18px;cursor:pointer;
-  backdrop-filter:blur(10px);transition:color .3s,border-color .3s;display:none;
+  background:rgba(9,13,22,.72);border:1px solid rgba(210,230,248,.5);border-radius:22px;
+  color:#eaf3fc;font-size:12px;letter-spacing:.2em;padding:11px 20px;cursor:pointer;
+  backdrop-filter:blur(10px);transition:color .3s,border-color .3s,background .3s;display:none;
+  box-shadow:0 4px 18px rgba(0,0,0,.4);font-weight:600;
 }
 .archive.on ~ .arch-back,.arch-back.on{display:block}
-.arch-back:hover{color:var(--ice);border-color:var(--ice-soft)}
+.arch-back:hover{color:#fff;border-color:var(--ice);background:rgba(20,40,70,.8)}
+/* 详情页左右切换章节键（对标播放器的上一首/下一首） */
+.arch-nav{position:fixed;right:26px;bottom:max(28px,calc(env(safe-area-inset-bottom,0px)+18px));
+  z-index:50;display:none;gap:12px;align-items:center}
+.archive.on ~ .arch-nav,.arch-nav.on{display:flex}
+.arch-nav button{width:46px;height:46px;border-radius:50%;
+  background:rgba(9,13,22,.72);border:1px solid rgba(210,230,248,.42);color:#eaf3fc;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(10px);transition:color .3s,border-color .3s,background .3s,transform .15s;
+  box-shadow:0 4px 16px rgba(0,0,0,.4)}
+.arch-nav button svg{width:20px;height:20px;fill:currentColor}
+.arch-nav button:hover{color:#fff;border-color:var(--ice);background:rgba(20,40,70,.8)}
+.arch-nav button:active{transform:scale(.92)}
 /* 章节背景层：极光为主体（已提亮），封面只做轻染色；上面盖的是低透明白纱，不用黑 */
 .arch-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .arch-bgimg{position:absolute;inset:-12%;display:block;
@@ -758,12 +771,14 @@ body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
   .player .ctrl button svg{width:18px;height:18px}
   /* 页码点：第1页=唱机，第2页=本章详情（对标音乐App顶部指示点） */
   .dots{display:flex;position:fixed;top:calc(88px + env(safe-area-inset-top,0px));
-    left:50%;transform:translateX(-50%);z-index:26;gap:7px}
-  .dots i{width:6px;height:6px;border-radius:50%;background:rgba(210,225,245,.30);
+    left:50%;transform:translateX(-50%);z-index:26;gap:10px}
+  .dots i{width:9px;height:9px;border-radius:50%;background:rgba(210,225,245,.38);
+    box-shadow:0 0 0 3px rgba(210,225,245,.12);
     transition:background .4s,box-shadow .4s,transform .4s}
-  .dots i:first-child{background:#dceeff;box-shadow:0 0 8px rgba(160,215,250,.85);transform:scale(1.18)}
-  body.reading .dots i:first-child{background:rgba(210,225,245,.30);box-shadow:none;transform:none}
-  body.reading .dots i:last-child{background:#dceeff;box-shadow:0 0 8px rgba(160,215,250,.85);transform:scale(1.18)}
+  .dots i:first-child{background:#fff;box-shadow:0 0 12px rgba(160,215,250,1),0 0 0 3px rgba(160,215,250,.22);transform:scale(1.25);animation:dotPulse 2s ease-in-out infinite}
+  @keyframes dotPulse{0%,100%{box-shadow:0 0 12px rgba(160,215,250,1),0 0 0 3px rgba(160,215,250,.22)}50%{box-shadow:0 0 18px rgba(180,225,255,1),0 0 0 6px rgba(160,215,250,.14)}}
+  body.reading .dots i:first-child{background:rgba(210,225,245,.38);box-shadow:0 0 0 3px rgba(210,225,245,.12);transform:none;animation:none}
+  body.reading .dots i:last-child{background:#fff;box-shadow:0 0 12px rgba(160,215,250,1),0 0 0 3px rgba(160,215,250,.22);transform:scale(1.25);animation:dotPulse 2s ease-in-out infinite}
   /* 详情页在窄屏从右侧滑入/滑出（配合左右滑手势） */
   .archive{opacity:0;visibility:hidden;transform:translateX(9vw);
     transition:opacity .45s ease,transform .45s var(--ease),visibility 0s linear .45s}
@@ -903,6 +918,10 @@ body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
 
 <!-- 归档视图（简历正文，结构与正文内容源自 resume.html v87） -->
 <button class="arch-back" id="archBack" type="button">← 返回唱机</button>
+<div class="arch-nav" id="archNav">
+  <button class="arch-prev" id="archPrev" type="button" aria-label="上一章"><svg viewBox="0 0 24 24"><path d="M15.5 6H18v12h-2.5zM5 18.5 13.8 12 5 5.5z"/></svg></button>
+  <button class="arch-next" id="archNext" type="button" aria-label="下一章"><svg viewBox="0 0 24 24"><path d="M6 6h2.5v12H6zm3.8 6L19 18.5v-13z"/></svg></button>
+</div>
 <div class="archive" id="archive"></div>
 
 <div class="toast" id="toast"></div>
@@ -916,6 +935,6 @@ body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
 }
 </script>
 <script type="module" src="js/arm3d.js?v=80"></script>
-<script src="resume-md.js?v=55"></script><script src="resume-v2.js?v=83"></script>
+<script src="resume-md.js?v=55"></script><script src="resume-v2.js?v=84"></script>
 </body>
 </html>
