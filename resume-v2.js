@@ -841,6 +841,7 @@ function setChapter(i,opts){
   const mel=$('mEnterLabel'); if(mel) mel.textContent=ch.label;   /* 窄屏进入按钮同步章节名 */
   const nt=$('npTrack'); if(nt) nt.textContent=ch.track;   /* 窄屏播放面板：章节号 */
   const nn=$('npName'); if(nn) nn.textContent=ch.label;    /* 窄屏播放面板：章节名 */
+  const an=$('archName'); if(an) an.textContent=ch.track+' · '+ch.label;   /* 详情页 mini bar：专辑名 */
   /* 海报排版层（v60）：按 big 数组动态生成 2~3 行，绕封套上/右/下流动（参考图多行交错） */
   const pr=$('ptRows');
   if(pr){
