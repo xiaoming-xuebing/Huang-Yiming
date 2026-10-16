@@ -554,32 +554,36 @@ body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
 }
 .archive.on ~ .arch-back,.arch-back.on{display:block}
 .arch-back:hover{color:var(--ice);border-color:var(--ice-soft)}
-/* 详情页左右切换章节键（浅色卡片风，与详情页背景色卡一致） */
-.arch-nav{position:fixed;right:26px;bottom:28px;top:auto;
-  z-index:50;display:none;gap:12px;align-items:center}
-.archive.on ~ .arch-nav,.arch-nav.on{display:flex}
-.arch-nav button{width:46px;height:46px;border-radius:50%;
-  background:rgba(255,255,255,.72);border:1px solid var(--hair);color:var(--txt);
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-  backdrop-filter:blur(10px);transition:color .3s,border-color .3s,background .3s,transform .15s;
-  box-shadow:0 4px 16px rgba(20,30,45,.14)}
-.arch-nav button svg{width:20px;height:20px;fill:currentColor}
-.arch-nav button:hover{color:var(--ice);border-color:var(--ice-soft)}
-.arch-nav button:active{transform:scale(.92)}
-/* 详情页迷你播放条：浅色底 + 深色控件（对标 QQ音乐浅色播放条，融入详情页色卡） */
-.arch-player{position:fixed;left:50%;transform:translateX(-50%);
-  bottom:max(24px,calc(env(safe-area-inset-bottom,0px) + 14px));z-index:50;display:none;
-  align-items:center;gap:10px;padding:9px 16px;border-radius:999px;width:min(92vw,460px);
-  background:rgba(255,255,255,.72);border:1px solid var(--hair);
-  backdrop-filter:blur(10px);box-shadow:0 4px 18px rgba(20,30,45,.16)}
+/* 详情页迷你播放条：通栏底栏（对标 QQ音乐桌面底栏：左切章/播放键 + 进度条弹性拉满中部，不悬空） */
+.arch-player{position:fixed;left:0;right:0;bottom:0;width:auto;z-index:50;display:none;
+  align-items:center;gap:14px;padding:10px 26px calc(10px + env(safe-area-inset-bottom,0px));
+  background:rgba(255,255,255,.82);border-top:1px solid var(--hair);
+  backdrop-filter:blur(14px);box-shadow:0 -6px 24px rgba(20,30,45,.10)}
 .archive.on ~ .arch-player,.arch-player.on{display:flex}
-.arch-player button{width:34px;height:34px;border-radius:50%;flex:none;cursor:pointer;
-  background:rgba(30,45,70,.08);border:1px solid var(--hair);color:var(--txt);
-  display:flex;align-items:center;justify-content:center;transition:background .3s,color .3s}
-.arch-player button:hover{background:rgba(94,200,232,.16);color:var(--ice)}
-.arch-player button svg{width:14px;height:14px;fill:currentColor}
-.arch-player .t{font-size:9.5px;letter-spacing:.08em;color:var(--txt-dim);
-  font-variant-numeric:tabular-nums;min-width:30px;text-align:center}
+/* 播放键 = 冰蓝实底白图标（主键，醒目点睛）；切章键 = 深藏青底白图标（与白背景对比强） */
+.arch-player button{width:36px;height:36px;border-radius:50%;flex:none;cursor:pointer;
+  border:none;display:flex;align-items:center;justify-content:center;
+  transition:filter .25s,transform .15s}
+.arch-player button:active{transform:scale(.9)}
+#archPlay{background:linear-gradient(160deg,#69d2f0,#3da6d8);box-shadow:0 3px 12px rgba(94,200,232,.45)}
+#archPlay:hover{filter:brightness(1.08)}
+#archPrev,#archNext{background:rgba(26,40,64,.88);box-shadow:0 2px 8px rgba(20,30,45,.28)}
+#archPrev:hover,#archNext:hover{filter:brightness(1.25)}
+.arch-player button svg{width:15px;height:15px;fill:#fff}
+.arch-player .t{font-size:10px;letter-spacing:.08em;color:var(--txt-dim);
+  font-variant-numeric:tabular-nums;min-width:34px;text-align:center}
+/* 窄屏：恢复原设计——播放条胶囊居中，左右切章键独立浮钮上移到播放条上方（竖直错开不重叠） */
+@media (max-width:900px){
+  .arch-player{left:50%;right:auto;transform:translateX(-50%);width:auto;
+    bottom:max(18px,calc(env(safe-area-inset-bottom,0px) + 10px));
+    border-radius:999px;border:1px solid var(--hair);
+    padding:8px 14px;gap:9px;box-shadow:0 6px 22px rgba(20,30,45,.16)}
+  #archSeek{width:min(42vw,160px)}
+  #archPrev,#archNext{position:fixed;width:44px;height:44px;
+    bottom:calc(max(18px,calc(env(safe-area-inset-bottom,0px) + 10px)) + 66px)}
+  #archNext{right:16px}
+  #archPrev{right:70px}
+}
 /* 详情页进度条浅色轨道（主播放器 #seek 是深底设计，详情页浅底需单独配色） */
 #archSeek::-webkit-slider-runnable-track{
   background:linear-gradient(90deg,var(--ice) 0%,#4d90b8 var(--fill,0%),rgba(110,130,160,.30) var(--fill,0%))}
@@ -946,14 +950,12 @@ body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
 <button class="arch-back" id="archBack" type="button">← 返回唱机</button>
 <div class="archive" id="archive"></div>
 <div class="arch-player" id="archPlayer">
+  <button id="archPrev" type="button" aria-label="上一章"><svg viewBox="0 0 24 24"><path d="M6 6h2.5v12H6zm3.8 6L19 18.5v-13z"/></svg></button>
   <button id="archPlay" type="button" aria-label="播放/暂停"><svg viewBox="0 0 24 24"><path id="archPlayIcon" d="M8 5v14l11-7z"/></svg></button>
+  <button id="archNext" type="button" aria-label="下一章"><svg viewBox="0 0 24 24"><path d="M15.5 6H18v12h-2.5zM5 18.5 13.8 12 5 5.5z"/></svg></button>
   <span class="t" id="archTCur">00:00</span>
   <input type="range" id="archSeek" min="0" max="1000" value="0" step="1" aria-label="播放进度">
   <span class="t" id="archTTot">00:00</span>
-</div>
-<div class="arch-nav" id="archNav">
-  <button class="arch-prev" id="archPrev" type="button" aria-label="上一章"><svg viewBox="0 0 24 24"><path d="M6 6h2.5v12H6zm3.8 6L19 18.5v-13z"/></svg></button>
-  <button class="arch-next" id="archNext" type="button" aria-label="下一章"><svg viewBox="0 0 24 24"><path d="M15.5 6H18v12h-2.5zM5 18.5 13.8 12 5 5.5z"/></svg></button>
 </div>
 
 <div class="toast" id="toast"></div>
