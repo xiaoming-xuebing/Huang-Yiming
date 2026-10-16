@@ -605,7 +605,7 @@ CHAPTERS.forEach((c,i)=>{
   b.addEventListener('click',()=>{
     /* v99：单击直接选中该章（去掉"先滑到中心再点一次"两步制）；
        中心卡防重弹的 packHold 由 bindPlayer 里的 strips.forEach 统一处理 */
-    setChapter(i,{autoplay:!audio.paused});
+    setChapter(i,{autoplay:true});   /* 切章节即自动播放（听歌逻辑：切歌=开始放） */
     setDeck(false);
   });
   stripDeck.appendChild(b);
@@ -1129,6 +1129,34 @@ archBack.addEventListener('click',closeArchive);
 const archNav=$('archNav');
 if($('archPrev')) $('archPrev').addEventListener('click',()=>{ stepTo(-1); });
 if($('archNext')) $('archNext').addEventListener('click',()=>{ stepTo(1); });
+/* 详情页迷你播放条：⏯ + 进度 + 时间，与主播放器共用 audio */
+(function bindArchPlayer(){
+  const ap=$('archPlay'), ase=$('archSeek'), ac=$('archTCur'), at=$('archTTot'), api=$('archPlayIcon');
+  if(!ap) return;
+  ap.addEventListener('click',()=>{
+    if(!audio.src) loadTrack(true);
+    else if(audio.paused){ playingIntent=true; const pr=audio.play(); if(pr&&pr.catch) pr.catch(()=>{}); }
+    else { playingIntent=false; audio.pause(); }
+  });
+  if(ase) ase.addEventListener('input',()=>{
+    if(!audio.duration) return;
+    const r=+ase.value/1000;
+    audio.currentTime=r*audio.duration;
+    ase.style.setProperty('--fill',(r*100).toFixed(2)+'%');
+    if(ac) ac.textContent=fmt(audio.currentTime);
+  });
+  /* 播放状态同步：图标跟随 主播放器键 一致 */
+  audio.addEventListener('play',()=>{ if(api) api.setAttribute('d',ICON_PAUSE); });
+  audio.addEventListener('pause',()=>{ if(api) api.setAttribute('d',ICON_PLAY); });
+  /* 进度同步：拖动中不抢 */
+  audio.addEventListener('timeupdate',()=>{
+    if(!audio.duration||!ase) return;
+    const pct=audio.currentTime/audio.duration*100;
+    if(document.activeElement!==ase){ ase.value=String(Math.round(pct*10)); ase.style.setProperty('--fill',pct.toFixed(2)+'%'); }
+    if(ac) ac.textContent=fmt(audio.currentTime);
+  });
+  audio.addEventListener('loadedmetadata',()=>{ if(at) at.textContent=fmt(audio.duration); });
+})();
 $('logoHome').addEventListener('click',e=>{ e.preventDefault(); closeArchive(); });
 dcLabel.parentElement.parentElement.addEventListener('dblclick',openArchive);
 

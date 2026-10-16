@@ -476,26 +476,26 @@ body.vinyl-hot .mc-entry-dot{opacity:0;animation:none}
 .progress{display:flex;align-items:center;gap:8px}
 .progress .t{font-size:8.5px;letter-spacing:.08em;color:rgba(206,220,240,.78);font-variant-numeric:tabular-nums;min-width:28px}
 .progress .t:last-child{text-align:right}
-#seek{
+#seek,#archSeek{
   flex:1;appearance:none;-webkit-appearance:none;height:18px;background:transparent;
   outline:none;cursor:pointer;
   filter:drop-shadow(0 0 0 transparent);transition:filter .5s ease;
 }
-body.playing #seek{filter:drop-shadow(0 0 7px var(--ice-soft))}
-#seek::-webkit-slider-runnable-track{
+body.playing #seek,#archSeek{filter:drop-shadow(0 0 7px var(--ice-soft))}
+#seek::-webkit-slider-runnable-track,#archSeek::-webkit-slider-runnable-track{
   height:4px;border-radius:2px;
   background:linear-gradient(90deg,var(--ice) 0%,#F0FAFF var(--fill,0%),rgba(190,205,228,.13) var(--fill,0%));
 }
-#seek::-webkit-slider-thumb{
+#seek::-webkit-slider-thumb,#archSeek::-webkit-slider-thumb{
   appearance:none;-webkit-appearance:none;width:11px;height:11px;border-radius:50%;
   margin-top:-3.5px;background:#F4FAFF;border:1.5px solid rgba(255,255,255,.92);
   box-shadow:0 0 0 3px rgba(94,200,232,.18),0 0 12px var(--ice-soft);
   transition:transform .2s ease;
 }
-#seek:hover::-webkit-slider-thumb{transform:scale(1.18)}
-#seek::-moz-range-track{height:4px;border-radius:2px;background:rgba(190,205,228,.13)}
-#seek::-moz-range-progress{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--ice),#F0FAFF)}
-#seek::-moz-range-thumb{width:10px;height:10px;border-radius:50%;background:#F4FAFF;border:1.5px solid rgba(255,255,255,.92);box-shadow:0 0 0 3px rgba(94,200,232,.18)}
+#seek:hover::-webkit-slider-thumb,#archSeek:hover::-webkit-slider-thumb{transform:scale(1.18)}
+#seek::-moz-range-track,#archSeek::-moz-range-track{height:4px;border-radius:2px;background:rgba(190,205,228,.13)}
+#seek::-moz-range-progress,#archSeek::-moz-range-progress{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--ice),#F0FAFF)}
+#seek::-moz-range-thumb,#archSeek::-moz-range-thumb{width:10px;height:10px;border-radius:50%;background:#F4FAFF;border:1.5px solid rgba(255,255,255,.92);box-shadow:0 0 0 3px rgba(94,200,232,.18)}
 .ctrl{display:flex;align-items:center;justify-content:center;gap:6px}
 .ctrl button{
   appearance:none;background:none;border:1px solid transparent;border-radius:50%;
@@ -555,7 +555,7 @@ body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
 .archive.on ~ .arch-back,.arch-back.on{display:block}
 .arch-back:hover{color:#fff;border-color:var(--ice);background:rgba(20,40,70,.8)}
 /* 详情页左右切换章节键（对标播放器的上一首/下一首） */
-.arch-nav{position:fixed;right:26px;bottom:max(28px,calc(env(safe-area-inset-bottom,0px)+18px));
+.arch-nav{position:fixed;right:26px;bottom:28px;top:auto;
   z-index:50;display:none;gap:12px;align-items:center}
 .archive.on ~ .arch-nav,.arch-nav.on{display:flex}
 .arch-nav button{width:46px;height:46px;border-radius:50%;
@@ -566,6 +566,23 @@ body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
 .arch-nav button svg{width:20px;height:20px;fill:currentColor}
 .arch-nav button:hover{color:#fff;border-color:var(--ice);background:rgba(20,40,70,.8)}
 .arch-nav button:active{transform:scale(.92)}
+/* 详情页迷你播放条：⏯ + 进度 + 时间（详情页内也能控制音乐） */
+.arch-player{position:fixed;left:50%;transform:translateX(-50%);
+  bottom:max(24px,calc(env(safe-area-inset-bottom,0px) + 14px));z-index:50;display:none;
+  align-items:center;gap:10px;padding:9px 16px;border-radius:999px;width:min(92vw,460px);
+  background:rgba(9,13,22,.72);border:1px solid rgba(210,230,248,.4);
+  backdrop-filter:blur(10px);box-shadow:0 4px 18px rgba(0,0,0,.4)}
+.archive.on ~ .arch-player,.arch-player.on{display:flex}
+.arch-player button{width:34px;height:34px;border-radius:50%;flex:none;cursor:pointer;
+  background:rgba(210,230,248,.16);border:1px solid rgba(210,230,248,.3);color:#eaf3fc;
+  display:flex;align-items:center;justify-content:center;transition:background .3s,color .3s}
+.arch-player button:hover{background:rgba(20,40,70,.85);color:#fff}
+.arch-player button svg{width:14px;height:14px;fill:currentColor}
+.arch-player .t{font-size:9.5px;letter-spacing:.08em;color:rgba(234,243,252,.78);
+  font-variant-numeric:tabular-nums;min-width:30px;text-align:center}
+/* AI 产品思考等卡片直接段落：段间留白（此前太挤） */
+.a-card > p{margin:0 0 14px}
+.a-card > p:last-child{margin-bottom:0}
 /* 章节背景层：极光为主体（已提亮），封面只做轻染色；上面盖的是低透明白纱，不用黑 */
 .arch-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .arch-bgimg{position:absolute;inset:-12%;display:block;
@@ -918,11 +935,17 @@ body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
 
 <!-- 归档视图（简历正文，结构与正文内容源自 resume.html v87） -->
 <button class="arch-back" id="archBack" type="button">← 返回唱机</button>
-<div class="arch-nav" id="archNav">
-  <button class="arch-prev" id="archPrev" type="button" aria-label="上一章"><svg viewBox="0 0 24 24"><path d="M15.5 6H18v12h-2.5zM5 18.5 13.8 12 5 5.5z"/></svg></button>
-  <button class="arch-next" id="archNext" type="button" aria-label="下一章"><svg viewBox="0 0 24 24"><path d="M6 6h2.5v12H6zm3.8 6L19 18.5v-13z"/></svg></button>
-</div>
 <div class="archive" id="archive"></div>
+<div class="arch-player" id="archPlayer">
+  <button id="archPlay" type="button" aria-label="播放/暂停"><svg viewBox="0 0 24 24"><path id="archPlayIcon" d="M8 5v14l11-7z"/></svg></button>
+  <span class="t" id="archTCur">00:00</span>
+  <input type="range" id="archSeek" min="0" max="1000" value="0" step="1" aria-label="播放进度">
+  <span class="t" id="archTTot">00:00</span>
+</div>
+<div class="arch-nav" id="archNav">
+  <button class="arch-prev" id="archPrev" type="button" aria-label="上一章"><svg viewBox="0 0 24 24"><path d="M6 6h2.5v12H6zm3.8 6L19 18.5v-13z"/></svg></button>
+  <button class="arch-next" id="archNext" type="button" aria-label="下一章"><svg viewBox="0 0 24 24"><path d="M15.5 6H18v12h-2.5zM5 18.5 13.8 12 5 5.5z"/></svg></button>
+</div>
 
 <div class="toast" id="toast"></div>
 
