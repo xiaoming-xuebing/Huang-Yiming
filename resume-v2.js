@@ -929,7 +929,7 @@ hero:'<section class="arch-sec" id="a-hero">'+
 advantages:'<section class="arch-sec" id="a-advantages">'+
   '<p class="arch-no">Track 02 · Prelude</p><h2 class="arch-title">个人优势</h2><p class="arch-sub">Advantages · Synopsis</p><div class="arch-rule"></div>'+
   '<div class="a-card"><span class="a-badge">01 · AI 工程能力</span>'+
-  '<p>擅长 <b>Multi-Agent 架构与 Agentic Workflow 编排、MCP 工具接入、RAG 与知识库构建（向量检索 + 重排）、大模型微调（SFT / LoRA）与评估（LLM-as-a-Judge）、Prompt 工程与上下文工程、评测数据集构建</b>，具备从模型选型到落地调优的完整实践经验。</p></div>'+
+  '<p>擅长 <b>Multi-Agent 架构与 Agentic Workflow 编排、RAG 与知识库构建、大模型微调（SFT / LoRA）与评估（LLM-as-a-Judge）、Skills 设计、评测数据集构建</b>。</p></div>'+
   '<div class="a-card"><span class="a-badge">02 · 项目实践</span>'+
   '<p>具有 AI 相关场景的项目产品实践经验，深度参与电商智能选品项目，涵盖<b>从模型选型 → 数据集构建 → 大模型评估 → 微调迭代</b>的完整闭环。</p></div>'+
   '<div class="a-card"><span class="a-badge">03 · 编程与 AI Coding</span>'+

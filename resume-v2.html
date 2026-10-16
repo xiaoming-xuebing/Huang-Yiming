@@ -547,11 +547,12 @@ body.reading #cosmos,body.reading #vignette{opacity:0}   /* 星漩/暗角不进�
 body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
 .arch-back{
   position:fixed;top:24px;left:34px;z-index:50;
-  background:rgba(255,255,255,.72);border:1px solid var(--hair);border-radius:22px;
-  color:var(--txt);font-size:12px;letter-spacing:.2em;padding:11px 20px;cursor:pointer;
+  background:rgba(255,255,255,.82);border:1px solid rgba(20,32,48,.24);border-radius:22px;
+  color:#1C2733;font-size:12px;letter-spacing:.2em;padding:11px 20px;cursor:pointer;
   backdrop-filter:blur(10px);transition:color .3s,border-color .3s,background .3s;display:none;
   box-shadow:0 4px 18px rgba(20,30,45,.16);font-weight:600;
 }
+/* 注意：.arch-back 是 .archive 的兄弟节点，取不到其作用域的 --txt/--hair，颜色必须写死 */
 .archive.on ~ .arch-back,.arch-back.on{display:block}
 .arch-back:hover{color:var(--ice);border-color:var(--ice-soft)}
 /* 详情页迷你播放条：通栏底栏（对标 QQ音乐桌面底栏）——颜色跟随章节主题色 --ice 变化 */
@@ -562,24 +563,25 @@ body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
   backdrop-filter:blur(14px);box-shadow:0 -6px 24px rgba(20,30,45,.10)}
 .archive.on ~ .arch-player,.arch-player.on{display:flex}
 .arch-player .np-cover{display:none}   /* 专辑封面小图仅窄屏 mini bar 显示 */
-/* 播放键 = 主题色实底白图标；切章键 = 深藏青底白图标（稳定对比锚） */
+/* 播放条按键通用 */
 .arch-player button{width:40px;height:40px;border-radius:50%;flex:none;cursor:pointer;
   border:none;display:flex;align-items:center;justify-content:center;
   transition:filter .25s,transform .15s}
 .arch-player button:active{transform:scale(.9)}
-#archPlay{background:linear-gradient(160deg,color-mix(in srgb,var(--ice) 62%,#fff),var(--ice));
-  box-shadow:0 3px 12px var(--ice-soft)}
-#archPlay:hover{filter:brightness(1.08)}
-#archPrev,#archNext{background:rgba(26,40,64,.88);box-shadow:0 2px 8px rgba(20,30,45,.28)}
-#archPrev:hover,#archNext:hover{filter:brightness(1.25)}
-.arch-player button svg{width:16px;height:16px;fill:#fff}
+/* 播放条三键 = 无底主题色图标（按色卡突出，精致不突兀） */
+#archPlay{background:transparent;box-shadow:none}
+#archPlay svg{width:21px;height:21px;fill:var(--ice)}
+#archPlay:hover{filter:brightness(1.15)}
+#archPrev,#archNext{background:transparent;box-shadow:none}
+#archPrev svg,#archNext svg{width:19px;height:19px;fill:var(--ice)}
+#archPrev:hover,#archNext:hover{opacity:.6}
 /* 详情页进度条：轨道/填充随主题色（浅底上有存在感） */
 #archSeek::-webkit-slider-runnable-track{height:5px;border-radius:2.5px;
   background:linear-gradient(90deg,var(--ice) 0%,color-mix(in srgb,var(--ice) 55%,#fff) var(--fill,0%),color-mix(in srgb,var(--ice) 16%,#dfe5ee) var(--fill,0%))}
 #archSeek::-moz-range-track{height:5px;border-radius:2.5px;background:color-mix(in srgb,var(--ice) 16%,#dfe5ee)}
 #archSeek::-moz-range-progress{height:5px;border-radius:2.5px;background:linear-gradient(90deg,var(--ice),color-mix(in srgb,var(--ice) 55%,#fff))}
 #archSeek::-webkit-slider-thumb{background:#fff;border:1.5px solid var(--ice-soft);box-shadow:0 0 0 3px color-mix(in srgb,var(--ice) 22%,transparent)}
-.arch-player .t{font-size:10px;letter-spacing:.08em;color:var(--txt-dim);
+.arch-player .t{font-size:10px;letter-spacing:.08em;color:#3D4B5F;   /* .arch-player 亦为 .archive 兄弟节点，取不到作用域变量，写死 */
   font-variant-numeric:tabular-nums;min-width:34px;text-align:center}
 /* 窄屏：一条通栏 mini bar——左专辑封面小图 + 中进度条 + 右 ⏮⏯⏭（对标 QQ音乐手机条） */
 @media (max-width:900px){
@@ -589,9 +591,9 @@ body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
     box-shadow:0 2px 8px rgba(20,30,45,.25)}
   .arch-player .t{display:none}
   #archSeek{order:2;flex:1;width:auto;min-width:0}
-  #archPrev{order:3;position:static;width:36px;height:36px;bottom:auto;right:auto}
-  #archPlay{order:4;width:40px;height:40px}
-  #archNext{order:5;position:static;width:36px;height:36px;bottom:auto;right:auto}
+  #archPrev{order:3;position:static;width:34px;height:34px;bottom:auto;right:auto}
+  #archPlay{order:4;width:34px;height:34px}
+  #archNext{order:5;position:static;width:34px;height:34px;bottom:auto;right:auto}
 }
 /* 详情页滚动条隐藏（粗黑滚动条太丑，手机上本就是细条） */
 .archive{scrollbar-width:none}
@@ -611,8 +613,8 @@ body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
 /* 详情页排版（参考 TAME IMPALA）：左侧一枚顶天立地的大黑胶（只露一半）+ 右侧正文，右上大标题 */
 .archive{--txt:#16202E;--txt-dim:#3D4B5F;--txt-faint:#6A798C;
   --ice:#0E4F6E;--ice-soft:rgba(14,79,110,.34);--hair:rgba(20,32,48,.16)}
-.arch-inner{max-width:1180px;margin:0 auto;padding:96px 48px 120px;position:relative;z-index:1}
-.arch-grid{display:grid;grid-template-columns:clamp(200px,58vh,470px) 1fr;gap:56px;align-items:start}
+.arch-inner{max-width:1320px;margin:0 auto;padding:96px 48px 120px;position:relative;z-index:1}
+.arch-grid{display:grid;grid-template-columns:clamp(200px,58vh,470px) 1fr;gap:44px;align-items:start}
 /* 黑胶：直径=视口高度，固定垂直居中（上下顶满），左半在屏幕外；不随正文滚动 */
 .arch-side{position:relative}
 .arch-pack{position:relative;width:0}
@@ -973,6 +975,6 @@ body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
 }
 </script>
 <script type="module" src="js/arm3d.js?v=80"></script>
-<script src="resume-md.js?v=55"></script><script src="resume-v2.js?v=85"></script>
+<script src="resume-md.js?v=55"></script><script src="resume-v2.js?v=86"></script>
 </body>
 </html>
