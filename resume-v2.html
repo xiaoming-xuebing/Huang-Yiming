@@ -554,27 +554,31 @@ body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
 }
 .archive.on ~ .arch-back,.arch-back.on{display:block}
 .arch-back:hover{color:var(--ice);border-color:var(--ice-soft)}
-/* 详情页迷你播放条：通栏底栏（对标 QQ音乐桌面底栏：左切章/播放键 + 进度条弹性拉满中部，不悬空） */
+/* 详情页迷你播放条：通栏底栏（对标 QQ音乐桌面底栏）——颜色跟随章节主题色 --ice 变化 */
 .arch-player{position:fixed;left:0;right:0;bottom:0;width:auto;z-index:50;display:none;
   align-items:center;gap:14px;padding:10px 26px calc(10px + env(safe-area-inset-bottom,0px));
-  background:rgba(255,255,255,.82);border-top:1px solid var(--hair);
+  background:color-mix(in srgb,var(--ice) 10%,rgba(255,255,255,.92));
+  border-top:1px solid color-mix(in srgb,var(--ice) 32%,rgba(255,255,255,.6));
   backdrop-filter:blur(14px);box-shadow:0 -6px 24px rgba(20,30,45,.10)}
 .archive.on ~ .arch-player,.arch-player.on{display:flex}
 .arch-player .np-cover{display:none}   /* 专辑封面小图仅窄屏 mini bar 显示 */
-/* 播放键 = 冰蓝实底白图标（主键，醒目点睛）；切章键 = 深藏青底白图标（与白背景对比强） */
+/* 播放键 = 主题色实底白图标；切章键 = 深藏青底白图标（稳定对比锚） */
 .arch-player button{width:40px;height:40px;border-radius:50%;flex:none;cursor:pointer;
   border:none;display:flex;align-items:center;justify-content:center;
   transition:filter .25s,transform .15s}
 .arch-player button:active{transform:scale(.9)}
-#archPlay{background:linear-gradient(160deg,#69d2f0,#3da6d8);box-shadow:0 3px 12px rgba(94,200,232,.45)}
+#archPlay{background:linear-gradient(160deg,color-mix(in srgb,var(--ice) 62%,#fff),var(--ice));
+  box-shadow:0 3px 12px var(--ice-soft)}
 #archPlay:hover{filter:brightness(1.08)}
 #archPrev,#archNext{background:rgba(26,40,64,.88);box-shadow:0 2px 8px rgba(20,30,45,.28)}
 #archPrev:hover,#archNext:hover{filter:brightness(1.25)}
 .arch-player button svg{width:16px;height:16px;fill:#fff}
-/* 详情页进度条轨道略加深加粗（浅底上要有存在感） */
+/* 详情页进度条：轨道/填充随主题色（浅底上有存在感） */
 #archSeek::-webkit-slider-runnable-track{height:5px;border-radius:2.5px;
-  background:linear-gradient(90deg,var(--ice) 0%,#4d90b8 var(--fill,0%),rgba(100,122,152,.38) var(--fill,0%))}
-#archSeek::-moz-range-track{height:5px;border-radius:2.5px;background:rgba(100,122,152,.38)}
+  background:linear-gradient(90deg,var(--ice) 0%,color-mix(in srgb,var(--ice) 55%,#fff) var(--fill,0%),color-mix(in srgb,var(--ice) 16%,#dfe5ee) var(--fill,0%))}
+#archSeek::-moz-range-track{height:5px;border-radius:2.5px;background:color-mix(in srgb,var(--ice) 16%,#dfe5ee)}
+#archSeek::-moz-range-progress{height:5px;border-radius:2.5px;background:linear-gradient(90deg,var(--ice),color-mix(in srgb,var(--ice) 55%,#fff))}
+#archSeek::-webkit-slider-thumb{background:#fff;border:1.5px solid var(--ice-soft);box-shadow:0 0 0 3px color-mix(in srgb,var(--ice) 22%,transparent)}
 .arch-player .t{font-size:10px;letter-spacing:.08em;color:var(--txt-dim);
   font-variant-numeric:tabular-nums;min-width:34px;text-align:center}
 /* 窄屏：一条通栏 mini bar——左专辑封面小图 + 中进度条 + 右 ⏮⏯⏭（对标 QQ音乐手机条） */
@@ -589,12 +593,6 @@ body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
   #archPlay{order:4;width:40px;height:40px}
   #archNext{order:5;position:static;width:36px;height:36px;bottom:auto;right:auto}
 }
-/* 详情页进度条浅色轨道（主播放器 #seek 是深底设计，详情页浅底需单独配色） */
-#archSeek::-webkit-slider-runnable-track{
-  background:linear-gradient(90deg,var(--ice) 0%,#4d90b8 var(--fill,0%),rgba(110,130,160,.30) var(--fill,0%))}
-#archSeek::-moz-range-track{background:rgba(110,130,160,.30)}
-#archSeek::-moz-range-progress{background:linear-gradient(90deg,var(--ice),#4d90b8)}
-#archSeek::-webkit-slider-thumb{background:#fff;border:1.5px solid rgba(120,150,180,.55);box-shadow:0 0 0 3px rgba(94,200,232,.16)}
 /* 详情页滚动条隐藏（粗黑滚动条太丑，手机上本就是细条） */
 .archive{scrollbar-width:none}
 .archive::-webkit-scrollbar{display:none}
