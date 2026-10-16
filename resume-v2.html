@@ -547,39 +547,48 @@ body.reading #cosmos,body.reading #vignette{opacity:0}   /* 星漩/暗角不进�
 body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
 .arch-back{
   position:fixed;top:24px;left:34px;z-index:50;
-  background:rgba(9,13,22,.72);border:1px solid rgba(210,230,248,.5);border-radius:22px;
-  color:#eaf3fc;font-size:12px;letter-spacing:.2em;padding:11px 20px;cursor:pointer;
+  background:rgba(255,255,255,.72);border:1px solid var(--hair);border-radius:22px;
+  color:var(--txt);font-size:12px;letter-spacing:.2em;padding:11px 20px;cursor:pointer;
   backdrop-filter:blur(10px);transition:color .3s,border-color .3s,background .3s;display:none;
-  box-shadow:0 4px 18px rgba(0,0,0,.4);font-weight:600;
+  box-shadow:0 4px 18px rgba(20,30,45,.16);font-weight:600;
 }
 .archive.on ~ .arch-back,.arch-back.on{display:block}
-.arch-back:hover{color:#fff;border-color:var(--ice);background:rgba(20,40,70,.8)}
-/* 详情页左右切换章节键（对标播放器的上一首/下一首） */
+.arch-back:hover{color:var(--ice);border-color:var(--ice-soft)}
+/* 详情页左右切换章节键（浅色卡片风，与详情页背景色卡一致） */
 .arch-nav{position:fixed;right:26px;bottom:28px;top:auto;
   z-index:50;display:none;gap:12px;align-items:center}
 .archive.on ~ .arch-nav,.arch-nav.on{display:flex}
 .arch-nav button{width:46px;height:46px;border-radius:50%;
-  background:rgba(9,13,22,.72);border:1px solid rgba(210,230,248,.42);color:#eaf3fc;
+  background:rgba(255,255,255,.72);border:1px solid var(--hair);color:var(--txt);
   cursor:pointer;display:flex;align-items:center;justify-content:center;
   backdrop-filter:blur(10px);transition:color .3s,border-color .3s,background .3s,transform .15s;
-  box-shadow:0 4px 16px rgba(0,0,0,.4)}
+  box-shadow:0 4px 16px rgba(20,30,45,.14)}
 .arch-nav button svg{width:20px;height:20px;fill:currentColor}
-.arch-nav button:hover{color:#fff;border-color:var(--ice);background:rgba(20,40,70,.8)}
+.arch-nav button:hover{color:var(--ice);border-color:var(--ice-soft)}
 .arch-nav button:active{transform:scale(.92)}
-/* 详情页迷你播放条：⏯ + 进度 + 时间（详情页内也能控制音乐） */
+/* 详情页迷你播放条：浅色底 + 深色控件（对标 QQ音乐浅色播放条，融入详情页色卡） */
 .arch-player{position:fixed;left:50%;transform:translateX(-50%);
   bottom:max(24px,calc(env(safe-area-inset-bottom,0px) + 14px));z-index:50;display:none;
   align-items:center;gap:10px;padding:9px 16px;border-radius:999px;width:min(92vw,460px);
-  background:rgba(9,13,22,.72);border:1px solid rgba(210,230,248,.4);
-  backdrop-filter:blur(10px);box-shadow:0 4px 18px rgba(0,0,0,.4)}
+  background:rgba(255,255,255,.72);border:1px solid var(--hair);
+  backdrop-filter:blur(10px);box-shadow:0 4px 18px rgba(20,30,45,.16)}
 .archive.on ~ .arch-player,.arch-player.on{display:flex}
 .arch-player button{width:34px;height:34px;border-radius:50%;flex:none;cursor:pointer;
-  background:rgba(210,230,248,.16);border:1px solid rgba(210,230,248,.3);color:#eaf3fc;
+  background:rgba(30,45,70,.08);border:1px solid var(--hair);color:var(--txt);
   display:flex;align-items:center;justify-content:center;transition:background .3s,color .3s}
-.arch-player button:hover{background:rgba(20,40,70,.85);color:#fff}
+.arch-player button:hover{background:rgba(94,200,232,.16);color:var(--ice)}
 .arch-player button svg{width:14px;height:14px;fill:currentColor}
-.arch-player .t{font-size:9.5px;letter-spacing:.08em;color:rgba(234,243,252,.78);
+.arch-player .t{font-size:9.5px;letter-spacing:.08em;color:var(--txt-dim);
   font-variant-numeric:tabular-nums;min-width:30px;text-align:center}
+/* 详情页进度条浅色轨道（主播放器 #seek 是深底设计，详情页浅底需单独配色） */
+#archSeek::-webkit-slider-runnable-track{
+  background:linear-gradient(90deg,var(--ice) 0%,#4d90b8 var(--fill,0%),rgba(110,130,160,.30) var(--fill,0%))}
+#archSeek::-moz-range-track{background:rgba(110,130,160,.30)}
+#archSeek::-moz-range-progress{background:linear-gradient(90deg,var(--ice),#4d90b8)}
+#archSeek::-webkit-slider-thumb{background:#fff;border:1.5px solid rgba(120,150,180,.55);box-shadow:0 0 0 3px rgba(94,200,232,.16)}
+/* 详情页滚动条隐藏（粗黑滚动条太丑，手机上本就是细条） */
+.archive{scrollbar-width:none}
+.archive::-webkit-scrollbar{display:none}
 /* AI 产品思考等卡片直接段落：段间留白（此前太挤） */
 .a-card > p{margin:0 0 14px}
 .a-card > p:last-child{margin-bottom:0}
@@ -958,6 +967,6 @@ body.reading .bg-aurora{filter:brightness(1.5) saturate(1.08)}
 }
 </script>
 <script type="module" src="js/arm3d.js?v=80"></script>
-<script src="resume-md.js?v=55"></script><script src="resume-v2.js?v=84"></script>
+<script src="resume-md.js?v=55"></script><script src="resume-v2.js?v=85"></script>
 </body>
 </html>
