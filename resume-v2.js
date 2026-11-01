@@ -945,8 +945,7 @@ featureRail:'<section class="arch-sec" id="a-featureRail">'+
   '<p><b>差异化：</b>与竞品相比，差异集中在两点——其一，<b>落地决策</b>：输出「具体 SKU + 价格 + 数量 + 依据」的可执行结论，而非一份分析；其二，<b>食品选品专精</b>：将合规、冷链、风味等通用工具难以处理的食品维度做深，使缺乏经验的中小商家也能获得可执行的选品结论。</p></div>'+
   '<div class="a-card"><span class="a-badge">02 · Agent 架构</span><h3 class="a-h3">Multi-Agent 架构</h3>'+
   '<p><b>澄清 Agent「模糊自然语言 → 结构化选品指令」</b>：识别意图（一级 + 二级）、补齐缺失字段（F1 平台地区 / F2 类目 / F3 诉求 / F4 商家信息）、口语映射、最多 3 轮反问、问不清就兜底。</p>'+
-  '<p><b>规划 Agent「结构化指令 → 执行计划」</b>：选品要调哪些 Skill / 工具、按什么顺序、每步产出什么中间结果，同时负责查收研究 Agent 结果，若不符合则打回重做。</p>'+
-  '<p><b>研究 Agent「执行计划 → 数据 + 中间结论」</b>：调用 websearch / SQL / RAG / 计算 / 风险评估等工具拿数据、算指标、留痕（可回看过程）。</p>'+
+  '<p><b>规划研究 Agent「结构化指令 → 执行计划 + 数据结论」</b>：拆出执行计划（调哪些 Skill / 工具、按什么顺序、每步产出什么），并亲自调用 websearch / SQL / RAG / 计算 / 风险评估等工具取数据、算指标、留痕（可回看过程）；结果不达标则自查重做。</p>'+
   '<p><b>报告 Agent「数据结论 → 结构化选品报告」</b>：按模块大纲把结果写成可落地的选品报告，渲染图表 + 组货清单 + 运营 SOP。</p>'+
   '<div class="a-figure"><svg viewBox="0 0 460 560" role="img" aria-label="Multi-Agent 选品流程图">'+
   '<defs><marker id="afArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#5a6b80"/></marker></defs>'+
@@ -954,23 +953,21 @@ featureRail:'<section class="arch-sec" id="a-featureRail">'+
   '<line x1="230" y1="66" x2="230" y2="98" marker-end="url(#afArrow)"/>'+
   '<line x1="230" y1="146" x2="230" y2="178" marker-end="url(#afArrow)"/>'+
   '<line x1="230" y1="226" x2="230" y2="258" marker-end="url(#afArrow)"/>'+
-  '<line x1="204" y1="306" x2="152" y2="352" marker-end="url(#afArrow)"/>'+
-  '<line x1="256" y1="306" x2="308" y2="352" marker-end="url(#afArrow)"/>'+
-  '<path d="M350 400 C350 448 350 496 306 496" marker-end="url(#afArrow)"/>'+
-  '<path d="M40 378 C12 378 12 284 146 284" stroke-dasharray="5 5" marker-end="url(#afArrow)"/>'+
+  '<line x1="230" y1="306" x2="230" y2="354" marker-end="url(#afArrow)"/>'+
+  '<line x1="230" y1="400" x2="230" y2="472" marker-end="url(#afArrow)"/>'+
+  '<path d="M350 272 L402 272 L402 296 L350 296" stroke-dasharray="5 5" marker-end="url(#afArrow)"/>'+
   '</g>'+
   '<g font-size="13.5" font-weight="600" text-anchor="middle">'+
   '<g><rect x="150" y="22" width="160" height="44" rx="10" fill="#eef2f8" stroke="#93a5bd"/><text x="230" y="49" fill="#1d2a3a">用户 query</text></g>'+
   '<g><rect x="150" y="102" width="160" height="44" rx="10" fill="#eef2f8" stroke="#93a5bd"/><text x="230" y="129" fill="#1d2a3a">意图识别</text></g>'+
   '<g><rect x="150" y="182" width="160" height="44" rx="10" fill="#dfe9f4" stroke="#5f7ba0"/><text x="230" y="209" fill="#16283f">澄清 Agent</text></g>'+
-  '<g><rect x="150" y="262" width="160" height="44" rx="10" fill="#dfe9f4" stroke="#5f7ba0"/><text x="230" y="289" fill="#16283f">规划 Agent</text></g>'+
-  '<g><rect x="40" y="356" width="140" height="44" rx="10" fill="#dfe9f4" stroke="#5f7ba0"/><text x="110" y="383" fill="#16283f">研究 Agent</text></g>'+
-  '<g><rect x="280" y="356" width="140" height="44" rx="10" fill="#dfe9f4" stroke="#5f7ba0"/><text x="350" y="383" fill="#16283f">报告 Agent</text></g>'+
+  '<g><rect x="110" y="262" width="240" height="44" rx="10" fill="#dfe9f4" stroke="#5f7ba0"/><text x="230" y="289" fill="#16283f">规划研究 Agent</text></g>'+
+  '<g><rect x="150" y="356" width="160" height="44" rx="10" fill="#dfe9f4" stroke="#5f7ba0"/><text x="230" y="383" fill="#16283f">报告 Agent</text></g>'+
   '<g><rect x="160" y="474" width="140" height="44" rx="10" fill="#eef2f8" stroke="#93a5bd"/><text x="230" y="501" fill="#1d2a3a">用户</text></g>'+
   '</g>'+
-  '<text x="86" y="332" font-size="10.5" text-anchor="middle" fill="#8a97a8">不符合 · 打回重做</text>'+
-  '<text x="372" y="452" font-size="10.5" text-anchor="start" fill="#8a97a8">结构化选品报告</text>'+
-  '</svg><p class="a-cap">图：Multi-Agent 选品流程（研究 Agent 结果不达标 → 虚线打回规划 Agent 重做；报告 Agent 直出报告给用户）</p></div></div>'+
+  '<text x="406" y="288" font-size="8.5" text-anchor="start" fill="#8a97a8">不达标·重做</text>'+
+  '<text x="244" y="440" font-size="10.5" text-anchor="start" fill="#8a97a8">结构化选品报告</text>'+
+  '</svg><p class="a-cap">图：Multi-Agent 选品流程（规划研究 Agent 结果不达标 → 虚线自查重做；报告 Agent 直出报告给用户）</p></div></div>'+
   '<div class="a-card"><span class="a-badge">03 · 意图&amp;澄清</span><h3 class="a-h3">意图识别与澄清设计</h3>'+
   '<p><b>核心原则：先定意图，澄清跟着意图走。</b>决策链：<b>有关/无关 → 品类明确度 → 一级意图 → 诉求（二级意图）→ 差异化澄清</b>。不同意图缺失的字段不同，问的顺序和内容也不同——不存在一套固定不变的澄清模板。</p>'+
   '<p><b>意图识别分三层</b>：① 有关/无关——判断输入能否映射到 A1–B5 十种策略之一，无关不硬拒、引导回选品；② 品类明确度 → 一级意图——无品类=全新赛道、一级大类=半明确先下钻、二级小类/三级细分=深耕拓品、具体商品=深耕聚焦，判定标准是「能不能直接进入选品运算」；③ 诉求（二级意图）→ 差异化澄清。</p>'+
@@ -1002,9 +999,9 @@ experience:'<section class="arch-sec" id="a-experience">'+
   '<p class="a-row"><i>方案</i>：结合自身业务场景需求，提出<b>「Multi-Agent」智能选品</b>产品方案设计。</p>'+
   '</div></div>'+
 
-  '<div class="a-step"><p class="a-step-h"><span class="no">②</span><span class="tl">Agent 设计</span><span class="sep">｜</span>依据「专业选品师选品经验」结合 Multi-Agent 技术，设计四 Agent 架构与「输入—过程—输出」微观机制：</p>'+
+  '<div class="a-step"><p class="a-step-h"><span class="no">②</span><span class="tl">Agent 设计</span><span class="sep">｜</span>依据「专业选品师选品经验」结合 Multi-Agent 技术，设计三 Agent 架构与「输入—过程—输出」微观机制：</p>'+
   '<div class="a-rows">'+
-  '<p class="a-row"><i>架构</i>：设计涵盖<b>澄清、规划、研究、报告四个 Agent</b> 的多智能体架构。</p>'+
+  '<p class="a-row"><i>架构</i>：设计涵盖<b>澄清、规划研究、报告三个 Agent</b> 的多智能体架构。</p>'+
   '<p class="a-row"><i>机制</i>：搭建「输入—过程—输出」三段式微观机制，逐层<b>收敛需求、编排能力、规范输出</b>：</p>'+
     '<div class="a-rows">'+
     '<p class="a-row lv2"><i>澄清侧</i>：通过「需求 / 品类 / 市场 / 商家信息」四维缺失识别 + <b>3 轮反问上限</b> + 默认选项卡片策略兜底，收敛模糊选品需求；</p>'+
